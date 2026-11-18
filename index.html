@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แวะเล่น แวะยิ้ม</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-outer: #F6E9EE;
+      --bg-card: #FFFDFD;
+      --pink-soft: #FCE8EE;
+      --pink-btn: #E67A9E;
+      --pink-btn-dark: #C4587D;
+      --ink: #3B2F35;
+      --ink-muted: #7A6670;
+      --green-soft: #E5F5EC;
+      --green-ink: #2D6A4F;
+      --yellow-soft: #FFF6DC;
+      --yellow-ink: #8A5A00;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Kanit', sans-serif;
+      background: linear-gradient(180deg, #FDF2F6 0%, #F3E5EC 100%);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+      font-size: 18px;
+    }
+
+    .game-cabinet {
+      width: 100%;
+      max-width: 520px;
+      height: 92vh;
+      max-height: 840px;
+      background: var(--bg-card);
+      border-radius: 34px;
+      border: 3px solid #F5D5E0;
+      box-shadow: 0 20px 45px rgba(180, 90, 125, 0.16);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: #FFFFFF;
+      border-bottom: 2px solid #F7E3EA;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .brand-emblem {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--pink-soft);
+      display: grid;
+      place-items: center;
+    }
+
+    .brand h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #B84A72;
+      line-height: 1.1;
+    }
+
+    .brand span {
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+    }
+
+    .top-tools {
+      display: flex;
+      gap: 8px;
+    }
+
+    .badge-pill {
+      font-family: 'Kanit', sans-serif;
+      border: none;
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .badge-pill.gold {
+      background: var(--yellow-soft);
+      color: var(--yellow-ink);
+      border: 1.5px solid #F6DC92;
+    }
+
+    .badge-pill.mint {
+      background: var(--green-soft);
+      color: var(--green-ink);
+      border: 1.5px solid #B7E4C7;
+    }
+
+    .badge-pill.mint.playing {
+      background: #40916C;
+      color: #FFFFFF;
+    }
+
+    .screen-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .hero-stage {
+      background: linear-gradient(180deg, #FDF0F4 0%, #F7FBF8 100%);
+      border: 2px solid #F4D4DF;
+      border-radius: 28px;
+      padding: 22px 18px 18px;
+      text-align: center;
+      box-shadow: 0 10px 24px rgba(196, 88, 125, 0.08);
+      margin-bottom: 18px;
+    }
+
+    .avatar-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .avatar-bubble {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 3px solid #F7D4DF;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+      display: grid;
+      place-items: center;
+    }
+
+    .avatar-bubble.main {
+      width: 86px;
+      height: 86px;
+      border-color: #FF8FA3;
+    }
+
+    .hero-tag {
+      font-size: 0.85rem;
+      color: var(--green-ink);
+      font-weight: 600;
+    }
+
+    .hero-title {
+      font-size: 1.8rem;
+      color: #B84A72;
+      margin: 4px 0 6px;
+    }
+
+    .hero-sub {
+      font-size: 0.98rem;
+      color: var(--ink-muted);
+      margin-bottom: 16px;
+    }
+
+    .btn-3d-pink {
+      font-family: 'Kanit', sans-serif;
+      border: none;
+      border-radius: 999px;
+      padding: 13px 26px;
+      font-size: 1.08rem;
+      font-weight: 600;
+      color: #FFFFFF;
+      background: linear-gradient(180deg, #F08CAE 0%, var(--pink-btn) 100%);
+      box-shadow: 0 5px 0 var(--pink-btn-dark);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.1s ease;
+    }
+
+    .btn-3d-pink:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 var(--pink-btn-dark);
+    }
+
+    .btn-3d-pink.small {
+      padding: 10px 16px;
+      font-size: 0.95rem;
+    }
+
+    .btn-3d-pink.full {
+      width: 100%;
+    }
+
+    .mini-garden-strip {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1.5px dashed #F1D2DD;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 36px;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-heading h3 {
+      font-size: 1.15rem;
+      color: #B84A72;
+    }
+
+    .sub-hint {
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+    }
+
+    .game-cards-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .gcard {
+      font-family: 'Kanit', sans-serif;
+      border-radius: 22px;
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      transition: transform 0.1s ease;
+    }
+
+    .gcard:active {
+      transform: translateY(3px);
+    }
+
+    .c-pink {
+      background: var(--pink-soft);
+      border: 2px solid #F5C2D2;
+      box-shadow: 0 5px 0 #E5A4B8;
+    }
+
+    .c-green {
+      background: var(--green-soft);
+      border: 2px solid #B7E4C7;
+      box-shadow: 0 5px 0 #8FCBA5;
+    }
+
+    .c-yellow {
+      background: var(--yellow-soft);
+      border: 2px solid #F6DC92;
+      box-shadow: 0 5px 0 #E3C268;
+    }
+
+    .gcard strong {
+      font-size: 1rem;
+    }
+
+    .gcard small {
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+    }
+
+    .sub-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .sub-header h2 {
+      font-size: 1.3rem;
+      color: #B84A72;
+    }
+
+    .btn-ghost {
+      font-family: 'Kanit', sans-serif;
+      border: 2px solid #E8CFD8;
+      background: #FFFFFF;
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-hint {
+      font-family: 'Kanit', sans-serif;
+      border: 1.5px solid #F6DC92;
+      background: var(--yellow-soft);
+      color: var(--yellow-ink);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .big-game-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .big-gcard {
+      font-family: 'Kanit', sans-serif;
+      border-radius: 24px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .big-icon {
+      font-size: 1.8rem;
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: #FFFFFF;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .big-gcard div {
+      flex: 1;
+    }
+
+    .big-gcard h3 {
+      font-size: 1.15rem;
+    }
+
+    .big-gcard p {
+      font-size: 0.88rem;
+      color: var(--ink-muted);
+    }
+
+    .go-pill {
+      background: #FFFFFF;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .play-heading {
+      font-size: 1.35rem;
+      color: #B84A72;
+    }
+
+    .play-desc {
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+      margin-bottom: 12px;
+    }
+
+    .board-card {
+      background: #FFFFFF;
+      border: 2px solid #F4D9E2;
+      border-radius: 26px;
+      padding: 14px;
+    }
+
+    .board-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--pink-soft);
+      padding: 8px 14px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: #B84A72;
+    }
+
+    .board-canvas {
+      min-height: 240px;
+      margin-bottom: 12px;
+    }
+
+    .board-note {
+      text-align: center;
+      background: #FFF8FA;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      color: var(--ink-muted);
+      margin-bottom: 12px;
+    }
+
+    .board-footer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .mem-card {
+      aspect-ratio: 3 / 4;
+      perspective: 600px;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    .mem-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.35s ease;
+      transform-style: preserve-3d;
+    }
+
+    .mem-card.flipped .mem-inner,
+    .mem-card.matched .mem-inner {
+      transform: rotateY(180deg);
+    }
+
+    .mem-front,
+    .mem-back {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mem-front {
+      background: var(--pink-btn);
+      color: #FFF;
+      font-size: 1.3rem;
+    }
+
+    .mem-back {
+      background: #FFFDFD;
+      border: 2px solid #F4A5BE;
+      transform: rotateY(180deg);
+    }
+
+    .mem-card.matched .mem-back {
+      background: var(--green-soft);
+      border-color: #40916C;
+    }
+
+    .mem-back span {
+      font-size: 0.72rem;
+      color: var(--ink-muted);
+    }
+
+    .spot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .spot-panel {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid #D8E2DC;
+    }
+
+    .spot-head {
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: var(--green-soft);
+      color: var(--green-ink);
+      padding: 3px;
+    }
+
+    .spot-svg {
+      width: 100%;
+      display: block;
+    }
+
+    .ring-mark {
+      fill: none;
+      stroke: #E63946;
+      stroke-width: 4;
+      opacity: 0;
+    }
+
+    .ring-mark.found {
+      opacity: 1;
+    }
+
+    .catcher-area {
+      position: relative;
+      height: 250px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #FDF0F4 0%, #E5F5EC 78%, #74C69D 78%);
+      touch-action: none;
+    }
+
+    .fall-item {
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+    }
+
+    .basket-box {
+      position: absolute;
+      bottom: 10px;
+      width: 82px;
+      height: 44px;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .dir-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .dir-btn {
+      font-family: 'Kanit', sans-serif;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1.5px solid #F6DC92;
+      background: var(--yellow-soft);
+      color: var(--yellow-ink);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .garden-stage {
+      position: relative;
+      height: 240px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 2px solid #B7E4C7;
+      background: linear-gradient(180deg, #FDF0F4 0%, #E5F5EC 58%, #52B788 58%);
+      margin-bottom: 14px;
+    }
+
+    .sun-circle {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #FFD166;
+    }
+
+    .garden-decor {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .garden-lawn {
+      position: absolute;
+      bottom: 0;
+      inset-inline: 0;
+      height: 44%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 8px;
+    }
+
+    .planted-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .gflower-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .garden-toast {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #FFFFFF;
+      border: 1.5px solid #F4A5BE;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .garden-toast.hidden {
+      display: none;
+    }
+
+    .garden-stat-box {
+      background: #FFFFFF;
+      border: 1.5px solid #F4D9E2;
+      border-radius: 20px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+    }
+
+    .garden-stat-box p {
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      height: 10px;
+      background: var(--pink-soft);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--pink-btn);
+      transition: width 0.3s ease;
+    }
+
+    .bottom-nav {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: #FFFFFF;
+      border-top: 2px solid #F7E3EA;
+      padding: 6px 8px;
+    }
+
+    .bnav-btn {
+      font-family: 'Kanit', sans-serif;
+      border: none;
+      background: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 6px;
+      border-radius: 14px;
+      color: var(--ink-muted);
+      cursor: pointer;
+    }
+
+    .bnav-btn.active {
+      background: var(--pink-soft);
+      color: #B84A72;
+      font-weight: 700;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(59, 47, 53, 0.5);
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.hidden {
+      display: none;
+    }
+
+    .modal-box {
+      background: #FFFFFF;
+      border-radius: 28px;
+      padding: 24px 20px;
+      max-width: 340px;
+      width: 100%;
+      text-align: center;
+      border: 3px solid #F4A5BE;
+    }
+
+    .modal-badge {
+      font-size: 2.2rem;
+    }
+
+    .modal-box h2 {
+      color: #B84A72;
+      margin: 6px 0;
+    }
+
+    .modal-box p {
+      color: var(--ink-muted);
+      margin-bottom: 16px;
+    }
+
+    .modal-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    @media (max-width: 460px) {
+      body { padding: 0; }
+      .game-cabinet { border-radius: 0; height: 100vh; max-height: none; border: none; }
+      .game-cards-row { grid-template-columns: 1fr; }
+      .spot-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="game-cabinet">
+
+  <header class="top-bar">
+    <div class="brand" onclick="switchScreen('home')">
+      <div class="brand-emblem">
+        <svg viewBox="0 0 36 36" width="24" height="24">
+          <circle cx="18" cy="9" r="5.5" fill="#FF6B8B"/>
+          <circle cx="26" cy="15" r="5.5" fill="#FF6B8B"/>
+          <circle cx="23" cy="25" r="5.5" fill="#FF6B8B"/>
+          <circle cx="13" cy="25" r="5.5" fill="#FF6B8B"/>
+          <circle cx="10" cy="15" r="5.5" fill="#FF6B8B"/>
+          <circle cx="18" cy="18" r="5" fill="#FFD166"/>
+        </svg>
+      </div>
+      <div>
+        <h1>แวะเล่น แวะยิ้ม</h1>
+        <span id="gardenRank">สวนเริ่มต้น</span>
+      </div>
+    </div>
+
+    <div class="top-tools">
+      <button class="badge-pill gold" onclick="switchScreen('garden')">
+        <span>❀</span>
+        <b id="topFlowerCount">6</b>
+      </button>
+      <button id="musicButton" class="badge-pill mint">
+        <span id="musicIcon">♪</span>
+        <span id="musicText">เปิดเสียง</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="screen-scroll">
+
+    <section id="screen-home" class="screen active">
+      <div class="hero-stage">
+        <div class="avatar-row">
+          <div class="avatar-bubble">
+            <svg viewBox="0 0 80 80" width="64" height="64">
+              <circle cx="40" cy="40" r="38" fill="#FFF1F4"/>
+              <circle cx="40" cy="34" r="18" fill="#F6D5C3"/>
+              <path d="M22 30 Q40 12 58 30" fill="#D9DCE2"/>
+              <circle cx="34" cy="34" r="2.3" fill="#3A2E2A"/>
+              <circle cx="46" cy="34" r="2.3" fill="#3A2E2A"/>
+              <path d="M34 42 Q40 47 46 42" stroke="#B85D68" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <path d="M22 66 Q22 52 40 52 Q58 52 58 66 Z" fill="#7CC6FE"/>
+            </svg>
+          </div>
+
+          <div class="avatar-bubble main">
+            <svg viewBox="0 0 80 80" width="72" height="72">
+              <circle cx="40" cy="40" r="38" fill="#FFE6EC"/>
+              <circle cx="40" cy="35" r="18" fill="#F6D5C3"/>
+              <circle cx="26" cy="24" r="8" fill="#C9CDD4"/>
+              <circle cx="54" cy="24" r="8" fill="#C9CDD4"/>
+              <path d="M23 31 Q40 15 57 31" fill="#C9CDD4"/>
+              <circle cx="34" cy="35" r="2.3" fill="#3A2E2A"/>
+              <circle cx="46" cy="35" r="2.3" fill="#3A2E2A"/>
+              <path d="M34 43 Q40 48 46 43" stroke="#B85D68" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <path d="M21 67 Q21 52 40 52 Q59 52 59 67 Z" fill="#FF85A1"/>
+            </svg>
+          </div>
+
+          <div class="avatar-bubble">
+            <svg viewBox="0 0 80 80" width="64" height="64">
+              <circle cx="40" cy="40" r="38" fill="#FFF6E5"/>
+              <ellipse cx="22" cy="38" rx="9" ry="15" fill="#B57B4A" transform="rotate(-15 22 38)"/>
+              <ellipse cx="58" cy="38" rx="9" ry="15" fill="#B57B4A" transform="rotate(15 58 38)"/>
+              <circle cx="40" cy="42" r="18" fill="#D99B66"/>
+              <ellipse cx="40" cy="47" rx="10" ry="7" fill="#F6DEC8"/>
+              <circle cx="34" cy="38" r="2.3" fill="#3A2E2A"/>
+              <circle cx="46" cy="38" r="2.3" fill="#3A2E2A"/>
+              <ellipse cx="40" cy="44" rx="4" ry="3" fill="#3A2E2A"/>
+            </svg>
+          </div>
+        </div>
+
+        <span class="hero-tag">ยินดีต้อนรับสู่สวนแห่งความสุข</span>
+        <h2 class="hero-title">แวะเล่น แวะยิ้ม</h2>
+        <p class="hero-sub">เกมพักใจระหว่างรอรับบริการ<br>พักสักนิด เล่นสักหน่อย เติมรอยยิ้มให้ทุกวัน</p>
+
+        <button class="btn-3d-pink" onclick="switchScreen('games')">
+          <span>เริ่มเล่นเกม</span>
+          <span class="btn-icon">▶</span>
+        </button>
+
+        <div class="mini-garden-strip" id="homeFlowerStrip"></div>
+      </div>
+
+      <div class="section-heading">
+        <h3>เลือกเกมที่คุณชอบ</h3>
+        <span class="sub-hint">แตะการ์ดเพื่อเริ่มเล่นได้เลย</span>
+      </div>
+
+      <div class="game-cards-row">
+        <button class="gcard c-pink" onclick="startGame('match')">
+          <div class="gcard-art">
+            <svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true">
+              <rect x="8" y="10" width="22" height="32" rx="6" fill="#FFF" stroke="#E67A9E" stroke-width="2"/>
+              <rect x="34" y="22" width="22" height="32" rx="6" fill="#FFF" stroke="#E67A9E" stroke-width="2"/>
+              <circle cx="19" cy="26" r="6" fill="#F4A5BE"/><circle cx="45" cy="38" r="6" fill="#F4A5BE"/>
+            </svg>
+          </div>
+          <strong>จับคู่ภาพ</strong><small>ฝึกความจำแบบเพลิน ๆ</small>
+        </button>
+        <button class="gcard c-green" onclick="startGame('spot')">
+          <div class="gcard-art">
+            <svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true">
+              <circle cx="27" cy="27" r="15" fill="#FFF" stroke="#40916C" stroke-width="4"/>
+              <path d="M38 38 L53 53" stroke="#40916C" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="27" cy="27" r="5" fill="#FFD166"/>
+            </svg>
+          </div>
+          <strong>จับผิดภาพ</strong><small>สังเกตความแตกต่าง</small>
+        </button>
+        <button class="gcard c-yellow" onclick="startGame('catch')">
+          <div class="gcard-art">
+            <svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true">
+              <path d="M13 34 L51 34 L45 54 L19 54 Z" fill="#D99B66" stroke="#8A5A00" stroke-width="2"/>
+              <path d="M18 34 Q32 20 46 34" fill="none" stroke="#8A5A00" stroke-width="3"/>
+              <path d="M32 7 C25 16 24 20 32 24 C40 20 39 16 32 7Z" fill="#E67A9E"/>
+            </svg>
+          </div>
+          <strong>รับดอกไม้</strong><small>เก็บดอกไม้ใส่ตะกร้า</small>
+        </button>
+      </div>
+    </section>
+
+    <section id="screen-games" class="screen">
+      <div class="sub-header"><h2>เกมพักใจ</h2><button class="btn-ghost" onclick="switchScreen('home')">← หน้าหลัก</button></div>
+      <p class="play-desc">เลือกเกมที่อยากเล่นได้เลย เล่นสบาย ๆ ไม่ต้องรีบ</p>
+      <div class="big-game-list">
+        <button class="big-gcard c-pink" onclick="startGame('match')"><span class="big-icon">▦</span><div><h3>จับคู่ภาพ</h3><p>เปิดภาพทีละใบ แล้วหาคู่ภาพที่เหมือนกัน</p></div><span class="go-pill">เล่น</span></button>
+        <button class="big-gcard c-green" onclick="startGame('spot')"><span class="big-icon">⌕</span><div><h3>จับผิดภาพ</h3><p>มองหาจุดที่แตกต่างกันในภาพสองภาพ</p></div><span class="go-pill">เล่น</span></button>
+        <button class="big-gcard c-yellow" onclick="startGame('catch')"><span class="big-icon">✿</span><div><h3>รับดอกไม้</h3><p>แตะดอกไม้ที่ร่วงลงมาเพื่อสะสมคะแนน</p></div><span class="go-pill">เล่น</span></button>
+      </div>
+    </section>
+
+    <section id="screen-match" class="screen">
+      <div class="sub-header"><h2>จับคู่ภาพ</h2><button class="btn-ghost" onclick="switchScreen('games')">← กลับ</button></div>
+      <p class="play-desc">แตะเปิดภาพครั้งละ 2 ใบ แล้วหาภาพที่เหมือนกันให้ครบ</p>
+      <div class="board-card">
+        <div class="board-top"><span>คู่ที่พบ <b id="matchPairs">0/6</b></span><span>จำนวนครั้ง <b id="matchMoves">0</b></span></div>
+        <div class="board-canvas"><div class="memory-grid" id="memoryGrid"></div></div>
+        <div class="board-note" id="matchMessage" aria-live="polite">ค่อย ๆ เล่น ไม่ต้องรีบนะ</div>
+        <div class="board-footer"><button class="btn-ghost" onclick="resetMatch()">เริ่มใหม่</button><button class="btn-3d-pink small" onclick="switchScreen('games')">เลือกเกมอื่น</button></div>
+      </div>
+    </section>
+
+    <section id="screen-spot" class="screen">
+      <div class="sub-header"><h2>จับผิดภาพ</h2><button class="btn-ghost" onclick="switchScreen('games')">← กลับ</button></div>
+      <p class="play-desc">แตะบริเวณที่คิดว่าแตกต่างกัน มีทั้งหมด 3 จุด</p>
+      <div class="board-card">
+        <div class="board-top"><span>พบแล้ว <b id="spotCount">0/3</b></span><span id="spotStatus">กำลังสังเกต</span></div>
+        <div class="spot-grid">
+          <div class="spot-panel"><div class="spot-head">ภาพที่ 1</div>
+            <svg class="spot-svg" viewBox="0 0 160 160" role="img" aria-label="ภาพสวนที่หนึ่ง">
+              <rect width="160" height="160" fill="#EAF7EF"/><circle cx="128" cy="25" r="13" fill="#FFD166"/>
+              <path d="M0 112 Q45 85 85 112 T160 108 V160 H0Z" fill="#91CBA5"/>
+              <rect x="66" y="73" width="9" height="42" rx="3" fill="#9B6B43"/><circle cx="70" cy="61" r="25" fill="#5AA879"/>
+              <circle cx="53" cy="58" r="13" fill="#70B98B"/><circle cx="88" cy="57" r="13" fill="#70B98B"/>
+              <path d="M24 116 Q24 103 37 103 Q50 103 50 116Z" fill="#F4A5BE"/><path d="M30 104 Q37 91 44 104" fill="#E67A9E"/>
+              <path d="M112 115 Q112 103 124 103 Q136 103 136 115Z" fill="#FFF"/><circle cx="124" cy="100" r="7" fill="#D99B66"/>
+              <g class="ring-mark" id="spotRing1"><circle cx="128" cy="25" r="12"/></g>
+              <g class="ring-mark" id="spotRing2"><circle cx="37" cy="105" r="13"/></g>
+              <g class="ring-mark" id="spotRing3"><circle cx="124" cy="100" r="12"/></g>
+              <rect x="0" y="0" width="160" height="160" fill="transparent" data-spot="all"/>
+            </svg>
+          </div>
+          <div class="spot-panel"><div class="spot-head">ภาพที่ 2</div>
+            <svg class="spot-svg" viewBox="0 0 160 160" role="img" aria-label="ภาพสวนที่สอง">
+              <rect width="160" height="160" fill="#EAF7EF"/><circle cx="128" cy="25" r="13" fill="#F4A5BE"/>
+              <path d="M0 112 Q45 85 85 112 T160 108 V160 H0Z" fill="#91CBA5"/>
+              <rect x="66" y="73" width="9" height="42" rx="3" fill="#9B6B43"/><circle cx="70" cy="61" r="25" fill="#5AA879"/>
+              <circle cx="53" cy="58" r="13" fill="#70B98B"/><circle cx="88" cy="57" r="13" fill="#70B98B"/>
+              <path d="M24 116 Q24 103 37 103 Q50 103 50 116Z" fill="#F4A5BE"/>
+              <path d="M112 115 Q112 103 124 103 Q136 103 136 115Z" fill="#FFF"/><circle cx="124" cy="100" r="7" fill="#D99B66"/>
+              <g class="ring-mark" id="spotRing1b"><circle cx="128" cy="25" r="12"/></g>
+              <g class="ring-mark" id="spotRing2b"><circle cx="37" cy="105" r="13"/></g>
+              <g class="ring-mark" id="spotRing3b"><circle cx="124" cy="100" r="12"/></g>
+              <rect x="0" y="0" width="160" height="160" fill="transparent"/>
+            </svg>
+          </div>
+        </div>
+        <div class="board-note" id="spotMessage" aria-live="polite">ลองสังเกตดวงอาทิตย์ ดอกไม้ และน้องหมา</div>
+        <button class="btn-3d-pink small full" onclick="resetSpot()">เริ่มรอบใหม่</button>
+      </div>
+    </section>
+
+    <section id="screen-catch" class="screen">
+      <div class="sub-header"><h2>รับดอกไม้</h2><button class="btn-ghost" onclick="switchScreen('games')">← กลับ</button></div>
+      <p class="play-desc">แตะดอกไม้ที่ปรากฏในสวนเพื่อเก็บคะแนน เล่นได้ตามจังหวะของตัวเอง</p>
+      <div class="board-card">
+        <div class="board-top"><span>คะแนน <b id="catchScore">0</b></span><span>เวลา <b id="catchTime">30</b> วินาที</span></div>
+        <div class="catcher-area" id="catcherArea">
+          <div class="basket-box" id="basketBox"><svg viewBox="0 0 82 44" width="82" height="44"><path d="M7 10 H75 L66 40 H16Z" fill="#C58A55" stroke="#8A5A00" stroke-width="3"/><path d="M13 18 H69 M17 27 H65" stroke="#F4D2A8" stroke-width="3"/></svg></div>
+        </div>
+        <div class="dir-row"><button class="dir-btn" onclick="moveBasket(-1)">← เลื่อนไปซ้าย</button><button class="dir-btn" onclick="moveBasket(1)">เลื่อนไปขวา →</button></div>
+        <div class="board-note" id="catchMessage" aria-live="polite">กดเริ่มเกม แล้วแตะดอกไม้ที่ปรากฏ</div>
+        <button class="btn-3d-pink small full" id="catchStart" onclick="startCatch()">เริ่มเกม</button>
+      </div>
+    </section>
+
+    <section id="screen-garden" class="screen">
+      <div class="sub-header"><h2>สวนของฉัน</h2><button class="btn-ghost" onclick="switchScreen('home')">← หน้าหลัก</button></div>
+      <p class="play-desc">ทุกครั้งที่เล่นเกมสำเร็จ คุณจะได้รับดอกไม้เพื่อเติมสีสันให้สวน</p>
+      <div class="garden-stage">
+        <div class="sun-circle"></div>
+        <div class="garden-decor">
+          <svg viewBox="0 0 360 240" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true">
+            <g fill="#FFF" opacity=".9"><ellipse cx="55" cy="42" rx="25" ry="10"/><ellipse cx="72" cy="38" rx="18" ry="13"/><ellipse cx="260" cy="68" rx="28" ry="10"/><ellipse cx="279" cy="64" rx="18" ry="13"/></g>
+            <path d="M0 170 Q90 145 180 170 T360 165 V240 H0Z" fill="#52B788"/>
+          </svg>
+        </div>
+        <div class="garden-toast" id="gardenToast">ยินดีต้อนรับสู่สวนของคุณ</div>
+        <div class="garden-lawn"><div class="planted-row" id="plantedFlowers"></div></div>
+      </div>
+      <div class="garden-stat-box">
+        <p>ดอกไม้ที่สะสมได้ <b id="gardenFlowerCount">0</b> ดอก</p>
+        <div class="progress-bar"><div class="progress-fill" id="gardenProgress" style="width:0%"></div></div>
+        <p id="gardenProgressText" style="margin:8px 0 0">สะสมดอกไม้เพื่อขยายสวนของคุณ</p>
+      </div>
+      <button class="btn-3d-pink small full" onclick="switchScreen('games')">กลับไปเล่นเกม</button>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="เมนูหลัก">
+    <button class="bnav-btn active" data-screen="home" onclick="switchScreen('home')"><span>⌂</span><small>หน้าหลัก</small></button>
+    <button class="bnav-btn" data-screen="games" onclick="switchScreen('games')"><span>▦</span><small>เกม</small></button>
+    <button class="bnav-btn" data-screen="garden" onclick="switchScreen('garden')"><span>❀</span><small>สวนของฉัน</small></button>
+  </nav>
+</div>
+
+<div class="modal-overlay hidden" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-box">
+    <div class="modal-badge" id="modalBadge">🌷</div>
+    <h2 id="modalTitle">เก่งมากเลย!</h2>
+    <p id="modalText">คุณทำสำเร็จแล้ว</p>
+    <div class="modal-stack">
+      <button class="btn-3d-pink full" id="modalPrimary" onclick="closeModal()">เล่นต่อ</button>
+      <button class="btn-ghost" onclick="closeModal();switchScreen('games')">เลือกเกมอื่น</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const state = { flowers: Number(localStorage.getItem('smileFlowers') || 0), music: false };
+  const $ = id => document.getElementById(id);
+  let audioContext = null, musicTimer = null;
+
+  function switchScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = $('screen-' + name);
+    if (target) target.classList.add('active');
+    document.querySelectorAll('.bnav-btn').forEach(b => b.classList.toggle('active', b.dataset.screen === name));
+    if (name === 'garden') renderGarden();
+    if (name === 'home') renderHomeFlowers();
+    $('screen-' + name)?.scrollIntoView({block:'nearest'});
+  }
+
+  function addFlowers(amount = 1) {
+    state.flowers += amount;
+    localStorage.setItem('smileFlowers', String(state.flowers));
+    updateFlowerCount();
+  }
+  function updateFlowerCount() {
+    $('topFlowerCount').textContent = state.flowers;
+    $('gardenFlowerCount').textContent = state.flowers;
+    $('gardenRank').textContent = state.flowers >= 20 ? 'สวนเบ่งบาน' : state.flowers >= 8 ? 'สวนสดใส' : 'สวนเริ่มต้น';
+  }
+  function renderHomeFlowers() {
+    const strip = $('homeFlowerStrip');
+    strip.innerHTML = '';
+    const count = Math.min(state.flowers, 12);
+    for (let i=0;i<count;i++) {
+      const span = document.createElement('span'); span.textContent = ['✿','❀','🌼'][i%3]; span.style.fontSize='20px'; strip.appendChild(span);
+    }
+    if (!count) strip.textContent = 'ดอกไม้ดอกแรกกำลังรอคุณอยู่';
+  }
+  function renderGarden() {
+    updateFlowerCount();
+    const row = $('plantedFlowers'); row.innerHTML = '';
+    const count = Math.min(state.flowers, 30);
+    for (let i=0;i<count;i++) {
+      const b = document.createElement('button'); b.className='gflower-btn'; b.type='button'; b.title='ดอกไม้ในสวน';
+      b.textContent = ['🌷','🌼','🌸','🌻','🌺'][i%5]; b.style.fontSize = (25 + (i%3)*5)+'px'; row.appendChild(b);
+    }
+    const pct = Math.min(100, state.flowers/30*100);
+    $('gardenProgress').style.width = pct+'%';
+    $('gardenProgressText').textContent = state.flowers >= 30 ? 'สวนของคุณเบ่งบานเต็มที่แล้ว' : `อีก ${30-state.flowers} ดอก สวนก็จะเบ่งบานเต็มที่`;
+    $('gardenToast').textContent = state.flowers ? 'สวนของคุณสดใสขึ้นทุกวัน' : 'เริ่มสะสมดอกไม้จากการเล่นเกม';
+  }
+  function showModal(title, message, badge='🌷', action=null) {
+    $('modalTitle').textContent=title; $('modalText').textContent=message; $('modalBadge').textContent=badge;
+    $('modalPrimary').onclick = () => { closeModal(); if (action) action(); };
+    $('resultModal').classList.remove('hidden');
+  }
+  function closeModal(){ $('resultModal').classList.add('hidden'); }
+
+  // เสียงประกอบแบบเบา ๆ สร้างด้วย Web Audio ไม่ต้องใช้ไฟล์เสียงภายนอก
+  function playTone(freq=660, duration=.12) {
+    if (!state.music) return;
+    try {
+      audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+      const osc=audioContext.createOscillator(), gain=audioContext.createGain();
+      osc.frequency.value=freq; osc.type='sine'; gain.gain.setValueAtTime(.035,audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+duration);
+      osc.connect(gain); gain.connect(audioContext.destination); osc.start(); osc.stop(audioContext.currentTime+duration);
+    } catch(e) {}
+  }
+  $('musicButton').addEventListener('click', () => {
+    state.music=!state.music;
+    $('musicButton').classList.toggle('playing',state.music);
+    $('musicText').textContent=state.music?'ปิดเสียง':'เปิดเสียง';
+    $('musicIcon').textContent=state.music?'♫':'♪';
+    if(state.music) playTone(523,.2);
+  });
+
+  // เกมจับคู่ภาพ
+  const matchSymbols=['🌷','🌼','🌻','🌸','🍀','🦋'];
+  let matchDeck=[], firstCard=null, lockMatch=false, matched=0, moves=0;
+  function startGame(game) {
+    if (game==='match') { switchScreen('match'); resetMatch(); }
+    if (game==='spot') { switchScreen('spot'); resetSpot(); }
+    if (game==='catch') { switchScreen('catch'); stopCatch(); $('catchMessage').textContent='กดเริ่มเกม แล้วแตะดอกไม้ที่ปรากฏ'; }
+  }
+  function resetMatch() {
+    matchDeck=[...matchSymbols,...matchSymbols].map((v,i)=>({v,id:i})).sort(()=>Math.random()-.5);
+    firstCard=null; lockMatch=false; matched=0; moves=0;
+    $('matchPairs').textContent='0/6'; $('matchMoves').textContent='0'; $('matchMessage').textContent='ค่อย ๆ เล่น ไม่ต้องรีบนะ';
+    const grid=$('memoryGrid'); grid.innerHTML='';
+    matchDeck.forEach(card=>{
+      const b=document.createElement('button'); b.className='mem-card'; b.type='button'; b.dataset.id=card.id; b.setAttribute('aria-label','เปิดการ์ด');
+      b.innerHTML=`<span class="mem-inner"><span class="mem-front">✿</span><span class="mem-back"><strong style="font-size:1.8rem">${card.v}</strong><span>ภาพดอกไม้</span></span></span>`;
+      b.addEventListener('click',()=>flipCard(b,card)); grid.appendChild(b);
+    });
+  }
+  function flipCard(button,card) {
+    if(lockMatch || button.classList.contains('flipped') || button.classList.contains('matched')) return;
+    button.classList.add('flipped'); playTone(620);
+    if(!firstCard){firstCard={button,card};return;}
+    moves++; $('matchMoves').textContent=moves;
+    if(firstCard.card.v===card.v){
+      firstCard.button.classList.add('matched'); button.classList.add('matched'); matched++;
+      $('matchPairs').textContent=matched+'/6'; firstCard=null; playTone(784);
+      if(matched===6){addFlowers(3); $('matchMessage').textContent='ยอดเยี่ยม! พบครบทุกคู่แล้ว'; showModal('จับคู่สำเร็จ!','คุณได้รับดอกไม้ 3 ดอก ไปตกแต่งสวนกันเลย','🌸',()=>switchScreen('garden'));}
+    } else {
+      lockMatch=true; const old=firstCard.button; firstCard=null;
+      $('matchMessage').textContent='ยังไม่ใช่คู่เดียวกัน ลองอีกครั้งนะ';
+      setTimeout(()=>{old.classList.remove('flipped');button.classList.remove('flipped');lockMatch=false;},850);
+    }
+  }
+
+  // เกมจับผิดภาพ: แตะตำแหน่งที่ต่างกันในภาพ
+  let foundSpots=new Set();
+  function resetSpot(){
+    foundSpots=new Set(); $('spotCount').textContent='0/3'; $('spotStatus').textContent='กำลังสังเกต';
+    $('spotMessage').textContent='ลองสังเกตดวงอาทิตย์ ดอกไม้ และน้องหมา';
+    ['spotRing1','spotRing2','spotRing3','spotRing1b','spotRing2b','spotRing3b'].forEach(id=>$(id).classList.remove('found'));
+  }
+  document.querySelectorAll('#screen-spot .spot-panel').forEach(panel=>{
+    panel.addEventListener('click',event=>{
+      const rect=panel.getBoundingClientRect(), x=(event.clientX-rect.left)/rect.width*160, y=(event.clientY-rect.top-24)/(rect.height-24)*160;
+      const spots=[{x:128,y:25},{x:37,y:105},{x:124,y:100}];
+      let nearest=-1,dist=999;
+      spots.forEach((p,i)=>{const d=Math.hypot(x-p.x,y-p.y);if(d<dist){dist=d;nearest=i;}});
+      if(dist<25 && !foundSpots.has(nearest)){
+        foundSpots.add(nearest); $(`spotRing${nearest+1}`).classList.add('found'); $(`spotRing${nearest+1}b`).classList.add('found');
+        $('spotCount').textContent=foundSpots.size+'/3'; $('spotMessage').textContent='เจอแล้ว เก่งมาก! ลองหาจุดต่อไป';
+        playTone(740);
+        if(foundSpots.size===3){$('spotStatus').textContent='ครบแล้ว';$('spotMessage').textContent='คุณสังเกตได้ครบทั้ง 3 จุดแล้ว';addFlowers(2);showModal('ตาไวมาก!','คุณได้รับดอกไม้ 2 ดอก','🌼',()=>switchScreen('garden'));}
+      } else if(dist>=25) $('spotMessage').textContent='ลองแตะบริเวณที่คิดว่าต่างกันอีกครั้งนะ';
+    });
+  });
+
+  // เกมรับดอกไม้
+  let catchScore=0, catchRemaining=30, catchInterval=null, spawnInterval=null, basketX=50, catchRunning=false;
+  function moveBasket(dir){basketX=Math.max(10,Math.min(90,basketX+dir*10));$('basketBox').style.left=basketX+'%';}
+  function spawnFlower(){
+    if(!catchRunning)return;
+    const area=$('catcherArea'), item=document.createElement('button');
+    item.className='fall-item'; item.type='button'; item.textContent=['🌸','🌼','🌷','🌻'][Math.floor(Math.random()*4)];
+    item.style.left=(8+Math.random()*84)+'%'; item.style.top=(12+Math.random()*60)+'%';
+    item.setAttribute('aria-label','เก็บดอกไม้'); item.addEventListener('click',()=>{if(!catchRunning)return;catchScore++;$('catchScore').textContent=catchScore;item.remove();playTone(800);});
+    area.appendChild(item); setTimeout(()=>item.remove(),1800);
+  }
+  function stopCatch(){
+    catchRunning=false; clearInterval(catchInterval);clearInterval(spawnInterval);
+    $('catcherArea').querySelectorAll('.fall-item').forEach(x=>x.remove());
+  }
+  function startCatch(){
+    stopCatch();catchScore=0;catchRemaining=30;catchRunning=true;basketX=50;
+    $('basketBox').style.left='50%';$('catchScore').textContent='0';$('catchTime').textContent='30';
+    $('catchMessage').textContent='แตะดอกไม้เพื่อเก็บคะแนน';$('catchStart').textContent='กำลังเล่น...';
+    spawnFlower();spawnInterval=setInterval(spawnFlower,850);
+    catchInterval=setInterval(()=>{
+      catchRemaining--; $('catchTime').textContent=catchRemaining;
+      if(catchRemaining<=0){
+        stopCatch();$('catchStart').textContent='เล่นอีกครั้ง';$('catchMessage').textContent=`คุณเก็บดอกไม้ได้ ${catchScore} ดอก`;
+        const reward=catchScore>=10?3:catchScore>=5?2:1;addFlowers(reward);
+        showModal('หมดเวลาแล้ว!','คุณได้รับดอกไม้เพิ่ม '+reward+' ดอก ขอบคุณที่แวะมาเล่นนะ','🌷',()=>switchScreen('garden'));
+      }
+    },1000);
+  }
+  $('catcherArea').addEventListener('pointermove',e=>{
+    if(!catchRunning)return;const r=$('catcherArea').getBoundingClientRect();basketX=Math.max(8,Math.min(92,(e.clientX-r.left)/r.width*100));$('basketBox').style.left=basketX+'%';
+  });
+  $('catcherArea').addEventListener('click',e=>{
+    if(!catchRunning)return;const r=$('catcherArea').getBoundingClientRect();basketX=Math.max(8,Math.min(92,(e.clientX-r.left)/r.width*100));$('basketBox').style.left=basketX+'%';
+  });
+
+  updateFlowerCount();renderHomeFlowers();
+  window.addEventListener('beforeunload',stopCatch);
+</script>
+</body>
+</html>
