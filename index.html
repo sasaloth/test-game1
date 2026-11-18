@@ -111,11 +111,30 @@ p{margin:0;font-size:16px}
 @keyframes sway{50%{transform:rotate(5deg) translateY(-3px)}}
 @keyframes fly{25%{transform:translate(90px,-25px)}50%{transform:translate(170px,15px)}75%{transform:translate(60px,35px)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+.sound-control{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);right:86px;z-index:50;width:64px;height:64px;border:3px solid #fff;border-radius:32px;background:#fff;font-size:28px;cursor:pointer}
+.encourage{min-height:24px;margin:-4px 0 2px;font-size:17px;font-weight:700;color:#2f7a4a}
+.garden-tools{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;width:100%}
+.decorate-btn,.spot-level{min-height:64px;border:2px solid #a8dc92;border-radius:18px;background:#fff;color:#2f7a4a;font:700 16px 'Mali',sans-serif;padding:8px 14px;cursor:pointer}
+.decorate-btn.on,.spot-level.on{background:#fff1c4;border-color:#e6aa30}
+.grown{animation:grow 1.2s ease-out both}
+.match-burst{position:absolute;z-index:8;font-size:34px;animation:burst .8s ease-out forwards;pointer-events:none}
+.star-line{display:flex;align-items:center;gap:4px}
+@keyframes grow{0%{transform:scale(.15);opacity:.2}70%{transform:scale(1.18)}100%{transform:scale(1);opacity:1}}
+@keyframes burst{to{transform:translateY(-55px) scale(1.5);opacity:0}}
+.info-options{display:flex;flex-direction:column;width:100%;gap:10px}
+.option-btn{min-height:64px;border:2px solid #a8dc92;border-radius:18px;background:#fff;color:#2f4d3c;font:700 18px 'Mali',sans-serif;padding:10px 16px;cursor:pointer}
+.option-btn.on{background:#e4f4dd;border-color:#61a96f}
+.mood-row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.mood-btn{min-width:92px;min-height:64px;border:2px solid #ffd45c;border-radius:18px;background:#fff;font:700 16px 'Mali',sans-serif;cursor:pointer}
+.mood-btn.on{background:#fff1c4;border-color:#e6aa30}
+.memo{width:min(520px,100%);min-height:100px;border:3px solid #cfe3cc;border-radius:18px;padding:12px;font:700 17px 'Mali',sans-serif;color:#2f4d3c;resize:vertical}
+.info-card{width:100%;max-width:520px;border:3px solid #fff;border-radius:22px;background:#fff;padding:16px;box-shadow:0 4px 0 #cfe3cc}
 </style>
 </head>
 <body>
 <div id="app">
 <button class="font-control" id="fontControl" type="button" aria-label="ปรับขนาดตัวอักษร">A</button>
+<button class="sound-control" id="soundControl" type="button" aria-label="เปิดหรือปิดเสียง">🔊</button>
 
 <section class="scr on cover-start" id="start">
   <h1>แวะเล่น<em>แวะยิ้ม</em></h1>
@@ -137,18 +156,21 @@ p{margin:0;font-size:16px}
   <button class="menu m1" data-go="match"><span>🃏</span><div><b>จับคู่ภาพ</b><small>หาภาพที่เหมือนกัน</small></div></button>
   <button class="menu m2" data-go="spot"><span>🔍</span><div><b>จับผิดภาพ</b><small>สังเกตจุดที่แตกต่าง</small></div></button>
   <button class="menu m3" data-go="garden"><span>🪴</span><div><b>สวนของฉัน</b><small>สะสมดอกไม้ ตกแต่งสวน</small></div></button>
+  <button class="menu m1" data-go="health"><span>💧</span><div><b>รู้เรื่องสุขภาพ</b><small>เลือกคำตอบสบาย ๆ ไม่สอบ</small></div></button>
+  <button class="menu m2" data-go="mood"><span>💛</span><div><b>บันทึกอารมณ์ก่อนพบหมอ</b><small>เลือกความรู้สึกและโน้ตสั้น ๆ</small></div></button>
   <button class="btn w" data-go="start">🏠 กลับหน้าหลัก</button>
 </section>
 
 <section class="scr" id="match">
   <h2>จับคู่ภาพ</h2>
   <p class="sub">หาภาพที่เหมือนกันให้ครบ</p>
+  <p class="encourage" id="matchEncourage" aria-live="polite">เลือกภาพที่คุ้นเคยได้เลย</p>
   <div class="level-row" aria-label="เลือกระดับความยาก">
     <button class="level-btn on" type="button" data-level="4">ง่าย<br>4 ใบ</button>
     <button class="level-btn" type="button" data-level="6">ปานกลาง<br>6 ใบ</button>
     <button class="level-btn" type="button" data-level="8">ท้าทาย<br>8 ใบ</button>
   </div>
-  <div class="bar"><span class="chip">🌸 พบ <span id="mc">0</span>/<span id="mp">2</span></span><button class="timer-btn" id="timerToggle" type="button">ไม่จับเวลา</button></div>
+  <div class="bar"><span class="chip">🌸 พบ <span id="mc">0</span>/<span id="mp">2</span></span><span class="chip star-line">⭐ <span id="matchScore">0</span></span><button class="timer-btn" id="timerToggle" type="button">ไม่จับเวลา</button></div>
   <div class="grid" id="mg"></div>
   <div class="row"><button class="btn w" data-go="menu">← กลับ</button><button class="btn" id="mh">💡 คำใบ้<span class="badge" id="mhn">3</span></button></div>
   <div class="ov" id="mo"><div class="big-f">⏰</div><h2>หมดเวลาแล้ว ไม่เป็นไรนะ</h2><button class="btn" data-go="match">เล่นอีกครั้ง</button><button class="btn w" data-go="menu">← กลับ</button></div>
@@ -157,10 +179,44 @@ p{margin:0;font-size:16px}
 <section class="scr" id="spot">
   <h2>จับผิดภาพ</h2>
   <p class="sub">ดูให้ดี แล้วหาจุดที่แตกต่างกัน</p>
-  <div class="bar"><span class="chip">พบ <span id="sn">0</span>/3</span></div>
+  <div class="level-row" aria-label="เลือกระดับจับผิดภาพ">
+    <button class="spot-level on" type="button" data-spot="easy">ง่าย · 1 จุด</button>
+    <button class="spot-level" type="button" data-spot="medium">ปานกลาง · 3 จุด</button>
+    <button class="spot-level" type="button" data-spot="hard">ยาก · 5 จุด</button>
+  </div>
+  <div class="bar"><span class="chip">พบ <span id="sn">0</span>/<span id="sp">1</span></span></div>
   <div class="sc" id="sa"></div>
   <div class="sc" id="sb"></div>
   <div class="row"><button class="btn w" data-go="menu">← กลับ</button><button class="btn" id="sh">💡 ขอคำใบ้<span class="badge" id="shn">3</span></button></div>
+</section>
+
+<section class="scr" id="health">
+  <h2>รู้เรื่องสุขภาพ</h2>
+  <p class="sub">ตอบได้ตามอารมณ์ ไม่ต้องคะแนน ไม่มีคำตอบผิด</p>
+  <p class="sub">ข้อมูลทั่วไปเพื่อพักใจ ไม่ใช่คำวินิจฉัยหรือแทนคำแนะนำแพทย์</p>
+  <div class="info-card">
+    <h3 id="healthQuestion" style="margin:0 0 12px;font-size:22px"></h3>
+    <div class="info-options" id="healthOptions"></div>
+  </div>
+  <p class="encourage" id="healthMessage" aria-live="polite">ลองอ่านช้า ๆ ได้เลย</p>
+  <div class="row"><button class="btn w" data-go="menu">← กลับ</button><button class="btn" id="healthNext" type="button">ข้อต่อไป →</button></div>
+</section>
+
+<section class="scr" id="mood">
+  <h2>ก่อนพบหมอ</h2>
+  <p class="sub">เลือกสิ่งที่ตรงกับวันนี้ แล้วอ่านให้นักจันทร์ฟังได้</p>
+  <div class="mood-row" aria-label="เลือกอารมณ์">
+    <button class="mood-btn" type="button" data-mood="สบายใจ">😊<br>สบายใจ</button>
+    <button class="mood-btn" type="button" data-mood="กังวล">😟<br>กังวล</button>
+    <button class="mood-btn" type="button" data-mood="เหนื่อย">😴<br>เหนื่อย</button>
+    <button class="mood-btn" type="button" data-mood="เจ็บปวด">🩹<br>เจ็บปวด</button>
+  </div>
+  <textarea class="memo" id="moodMemo" maxlength="160" aria-label="บันทึกสั้น ๆ" placeholder="อยากให้หมอรู้เรื่องอะไร เช่น เหนื่อย 2 วัน ปวดเวลาเดิน..."></textarea>
+  <div class="info-card" id="moodSummary">วันนี้ยังไม่มีข้อมูลที่บันทึกไว้</div>
+  <div class="row">
+    <button class="btn w" data-go="menu">← กลับ</button>
+    <button class="btn" id="moodSpeak" type="button">🔊 อ่านให้ฟัง</button>
+  </div>
 </section>
 
 <section class="scr" id="win">
@@ -175,7 +231,13 @@ p{margin:0;font-size:16px}
 <section class="scr" id="garden">
   <h2 id="gardenTitle">สวนของฉัน</h2>
   <input class="garden-name" id="gardenName" maxlength="24" aria-label="ชื่อสวน" placeholder="ตั้งชื่อสวนของคุณ">
-  <div class="bar"><span class="chip">🌼 <span id="gn">0</span> ดอก</span></div>
+  <div class="bar"><span class="chip">🌼 <span id="gn">0</span> ดอก</span><span class="chip">⭐ <span id="gardenStars">0</span></span></div>
+  <div class="garden-tools" aria-label="ของประดับสวน">
+    <button class="decorate-btn on" type="button" data-decor="none">🌱 ธรรมชาติ</button>
+    <button class="decorate-btn" type="button" data-decor="bench">🪑 ม้านั่ง</button>
+    <button class="decorate-btn" type="button" data-decor="pond">💧 บ่อน้ำ</button>
+    <button class="decorate-btn" type="button" data-decor="lantern">🏮 โคมไฟ</button>
+  </div>
   <div class="garden garden-wrap" id="gd"></div>
   <div class="row"><button class="btn" data-go="menu">▶ เล่นอีกเกม</button><button class="btn p" data-go="start">⏸ พักก่อน</button></div>
 </section>
@@ -183,13 +245,51 @@ p{margin:0;font-size:16px}
 </div>
 <script>
 const $=s=>document.querySelector(s),FL=['🌻','🌷','🌸','🌼','🌺','🪻','🌹'];
-let T,garden=[],matchCards=4,timerEnabled=false,fontLevel=1,waitMode=0,sessionRounds=0;
+let T,garden=[],decorations=[],matchCards=4,timerEnabled=false,fontLevel=1,waitMode=0,sessionRounds=0,matchScore=0,soundEnabled=true,audioContext=null,spotLevel='easy';
 try{garden=JSON.parse(localStorage.getItem('wwg')||'[]')}catch(e){}
-const save=()=>{try{localStorage.setItem('wwg',JSON.stringify(garden))}catch(e){}};
+try{decorations=JSON.parse(localStorage.getItem('wwDecor')||'[]')}catch(e){}
+const save=()=>{try{localStorage.setItem('wwg',JSON.stringify(garden));localStorage.setItem('wwDecor',JSON.stringify(decorations))}catch(e){}};
 const shuf=a=>[...a].sort(()=>Math.random()-.5);
-const inits={match,spot,win,garden:drawGarden};
+const inits={match,spot,win,garden:drawGarden,health:initHealth,mood:initMood};
 function go(id){clearInterval(T);document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id==id));inits[id]&&inits[id]()}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
+
+const healthQuestions=[
+  {q:'ควรดื่มน้ำประมาณเมื่อไหร่?',options:['ค่อย ๆ ดื่มตลอดทั้งวัน','ดื่มครั้งเดียวให้ครบ','ไม่ต้องดื่มถ้าไม่ค่อยหิวน้ำ'],a:0,note:'การดื่มน้ำสม่ำเสมอช่วยให้ร่างกายชุ่มชื้น แต่ปริมาณที่เหมาะสมอาจต่างกันตามแพทย์แนะนำ'},
+  {q:'เมื่อนั่งรอคิวนานควรทำอย่างไร?',options:['ลุกยืดเส้นตามสะดวก','นั่งนิ่งตลอดเวลา','ลุกเดินเร็ว ๆ ไม่พัก'],a:0,note:'สามารถลุกยืดเส้นช้า ๆ และขอความช่วยเหลือหากรู้สึกไม่มั่นคง'},
+  {q:'การพักผ่อนระหว่างรอหมอควรเป็นอย่างไร?',options:['หายใจช้า ๆ แล้วสังเกตรอบตัว','พยายามเก็บทุกอย่างให้เร็วที่สุด','ไม่ควรหยุดพักเลย'],a:0,note:'การหายใจช้า ๆ ไม่เร่งรีบอาจช่วยให้รู้สึกสงบลง'}
+];
+let healthIndex=0;
+function initHealth(){
+  healthIndex=0;$('#healthMessage').textContent='ลองอ่านช้า ๆ ได้เลย';renderHealth();
+}
+function renderHealth(){
+  const item=healthQuestions[healthIndex];
+  $('#healthQuestion').textContent=(healthIndex+1)+'. '+item.q;
+  $('#healthOptions').innerHTML=item.options.map((text,i)=>`<button class="option-btn" type="button" data-answer="${i}">${text}</button>`).join('');
+  $('#healthOptions').querySelectorAll('[data-answer]').forEach(btn=>btn.onclick=()=>{
+    $('#healthOptions').querySelectorAll('[data-answer]').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    const correct=Number(btn.dataset.answer)==item.a;
+    const text=correct?'ใช้ได้ดีในการดูแลตัวเอง: '+item.note:'สิ่งนี้ก็เป็นทางเลือก ลองพิจารณาอีกหน่อย: '+item.note;
+    $('#healthMessage').textContent=text;speak(text);
+  });
+}
+$('#healthNext').onclick=()=>{
+  healthIndex=(healthIndex+1)%healthQuestions.length;
+  $('#healthMessage').textContent='ไปอีกหนึ่งเรื่องง่าย ๆ กัน';renderHealth();
+};
+
+function ensureAudio(){
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!audioContext&&AC)audioContext=new AC();
+  if(audioContext&&audioContext.state==='suspended')audioContext.resume();
+}
+function ding(){if(!soundEnabled)return;ensureAudio();if(!audioContext)return;
+  [880,1175].forEach((f,i)=>{const o=audioContext.createOscillator(),g=audioContext.createGain();o.frequency.value=f;o.type='sine';g.gain.value=.07;o.connect(g);g.connect(audioContext.destination);const s=audioContext.currentTime+i*.13;o.start(s);g.gain.exponentialRampToValueAtTime(.001,s+.14);o.stop(s+.14)});
+}
+function speak(text){if(!soundEnabled||!('speechSynthesis' in window))return;const u=new SpeechSynthesisUtterance(text);u.lang='th-TH';u.rate=.85;u.pitch=1.05;speechSynthesis.cancel();speechSynthesis.speak(u)}
+$('#soundControl').onclick=()=>{soundEnabled=!soundEnabled;$('#soundControl').textContent=soundEnabled?'🔊':'🔇';if(soundEnabled)ding()};
 
 $('#fontControl').onclick=()=>{
   fontLevel=fontLevel%3+1;
@@ -220,8 +320,15 @@ $('#timerToggle').onclick=()=>{
 function match(){
   clearInterval(T);
   const pairCount=matchCards/2;
-  const a=shuf(['🌸','🦋','🌻','🐞','🍃','🌷']).slice(0,pairCount),g=$('#mg');
-  let open=[],found=0,lock=false,t=60,hints=3;
+  const sets=[
+    ['🪷','🌺','🌻','🌼','🌸','🌷'],
+    ['🥭','🍌','🍍','🥥','🍊','🍉'],
+    ['🦋','🐝','🐞','🐠','🐢','🦜'],
+    ['🌳','⛰️','🌅','🌈','🍃','🌱']
+  ];
+  const pool=shuf(sets).flat().filter((v,i,a)=>a.indexOf(v)==i);
+  const a=shuf(pool).slice(0,pairCount),g=$('#mg');
+  let open=[],found=0,lock=false,t=60,hints=3,mistakes=0;
   g.innerHTML='';$('#mo').classList.remove('on');$('#mc').textContent=0;$('#mp').textContent=pairCount;$('#mhn').textContent=3;
   document.querySelectorAll('[data-level]').forEach(b=>b.classList.toggle('on',Number(b.dataset.level)==matchCards));
   $('#timerToggle').textContent=timerEnabled?'โหมดท้าทาย · 01:00':'ไม่จับเวลา';
@@ -235,8 +342,18 @@ function match(){
       if(x.textContent==y.textContent){
         x.classList.replace('open','done');y.classList.replace('open','done');open=[];lock=false;
         $('#mc').textContent=++found;
-        if(found==pairCount){clearInterval(T);setTimeout(()=>go('win'),700)}
-      }else setTimeout(()=>{x.classList.remove('open');y.classList.remove('open');open=[];lock=false},800);
+        mistakes=0;matchScore+=10;$('#matchScore').textContent=matchScore;
+        ding();speak('เก่งมาก');
+        const burst=document.createElement('span');burst.className='match-burst';burst.textContent='✨⭐';burst.style.left=(c.offsetLeft+c.offsetWidth/2)+'px';burst.style.top=(c.offsetTop+c.offsetHeight/2)+'px';g.append(burst);setTimeout(()=>burst.remove(),800);
+        $('#matchEncourage').textContent='เก่งมาก เลือกได้ด้วยใจ';
+        if(found==pairCount){clearInterval(T);matchScore+=timerEnabled?20:30;$('#matchScore').textContent=matchScore;setTimeout(()=>go('win'),700)}
+      }else{
+        mistakes++;
+        $('#matchEncourage').textContent='ลองอีกทีนะ ดูภาพให้ชัด ๆ';
+        speak('ลองอีกทีนะ');
+        if(mistakes>=2){$('#matchEncourage').textContent='ลองมองภาพซ้ำกันช้า ๆ อีกครั้งนะ';mistakes=0}
+        setTimeout(()=>{x.classList.remove('open');y.classList.remove('open');open=[];lock=false},800);
+      }
     };
     g.append(c);
   });
@@ -257,27 +374,36 @@ const B=A.filter(i=>i[0]!='🦋').map(i=>i[0]=='🌷'?['🌺',i[1],i[2],i[3]]:i)
 const D=[[62,82],[30,18],[75,60]];
 const draw=(el,items)=>el.innerHTML='<div class="fence"></div>'+items.map(i=>`<i style="left:${i[1]}%;top:${i[2]}%;font-size:${i[3]}px">${i[0]}</i>`).join('');
 const ring=(d,c='')=>[$('#sa'),$('#sb')].map(el=>{const r=document.createElement('b');r.className='ring '+c;r.style.left=d[0]+'%';r.style.top=d[1]+'%';el.append(r);return r});
+const spotSets={
+  easy:{a:[['🌳',12,40,46],['🏡',50,36,50],['🌸',20,80,26],['🌻',82,80,28],['🦋',30,18,24]],b:[['🌳',12,40,46],['🏡',50,36,50],['🌺',20,80,26],['🌻',82,80,28],['🐝',30,18,24]],d:[[20,80],[30,18],[62,82]]},
+  medium:{a:[['🌳',12,40,46],['🏡',50,36,50],['🌸',20,80,26],['🌼',40,84,26],['🌷',62,82,26],['🌻',82,80,28],['🦋',30,18,24]],b:[['🌳',12,40,46],['🏡',50,36,50],['🌺',20,80,26],['🌼',40,84,26],['🌷',62,82,26],['🌻',82,80,28],['🐝',30,18,24]],d:[[20,80],[30,18],[62,82],[50,36],[88,42]]},
+  hard:{a:[['🌳',12,40,46],['🏡',50,36,50],['🌳',88,42,42],['🌸',20,80,26],['🌼',40,84,26],['🌷',62,82,26],['🌻',82,80,28],['🦋',30,18,24],['☁️',72,12,32]],b:[['🌳',12,40,46],['🏡',50,36,50],['🌳',88,42,42],['🌺',20,80,26],['🌼',40,84,26],['🌷',62,82,26],['🌻',82,80,28],['🐝',30,18,24],['☁️',72,12,32]],d:[[20,80],[30,18],[62,82],[50,36],[88,42],[72,12],[40,84],[12,40],[82,80]]}
+};
+document.querySelectorAll('[data-spot]').forEach(btn=>btn.onclick=()=>{spotLevel=btn.dataset.spot;document.querySelectorAll('[data-spot]').forEach(b=>b.classList.toggle('on',b==btn));spot()});
 function spot(){
-  const f=[];let hints=3;
-  draw($('#sa'),A);draw($('#sb'),B);$('#sn').textContent=0;$('#shn').textContent=3;
+  const f=[];let hints=3,mistakes=0;
+  const set=spotSets[spotLevel],target=spotLevel=='easy'?1:spotLevel=='medium'?3:5;
+  draw($('#sa'),set.a);draw($('#sb'),set.b);$('#sn').textContent=0;$('#sp').textContent=target;$('#shn').textContent=3;
   [$('#sa'),$('#sb')].forEach(el=>el.onclick=e=>{
     const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;
-    const k=D.findIndex((d,i)=>!f.includes(i)&&Math.abs(x-d[0])<16&&Math.abs(y-d[1])<24);
-    if(k<0){el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');return}
-    f.push(k);ring(D[k]);$('#sn').textContent=f.length;
-    if(f.length==3)setTimeout(()=>go('win'),800);
+    const k=set.d.findIndex((d,i)=>!f.includes(i)&&Math.abs(x-d[0])<16&&Math.abs(y-d[1])<24);
+    if(k<0){mistakes++;el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');speak('ลองอีกทีนะ');if(mistakes>=2){const d=set.d.find((v,i)=>!f.includes(i));if(d){ring(d,'h');setTimeout(()=>[$('#sa'),$('#sb')].forEach(e=>e.querySelectorAll('.ring.h').forEach(r=>r.remove())),1600)}mistakes=0}return}
+    f.push(k);ring(set.d[k]);$('#sn').textContent=f.length;ding();speak('เก่งมาก');
+    if(f.length==target)setTimeout(()=>go('win'),800);
   });
   $('#sh').onclick=()=>{
-    const k=D.findIndex((d,i)=>!f.includes(i));
+    const k=set.d.findIndex((d,i)=>!f.includes(i));
     if(hints<1||k<0)return;
     $('#shn').textContent=--hints;
-    const rs=ring(D[k],'h');setTimeout(()=>rs.forEach(r=>r.remove()),1600);
+    const rs=ring(set.d[k],'h');setTimeout(()=>rs.forEach(r=>r.remove()),1600);
   };
 }
 
 function win(){
   const fl=FL[Math.floor(Math.random()*FL.length)];
   $('#wf').textContent=fl;garden.push(fl);save();
+  matchScore+=10;$('#gardenStars').textContent=matchScore;
+  ding();
   sessionRounds++;
   const target=Number($('#sessionHint').dataset.target||0);
   $('#winStatus').textContent=target
@@ -291,20 +417,54 @@ function drawGarden(){
   $('#gardenName').value=gardenName;
   $('#gardenTitle').textContent=gardenName?gardenName+' 🌿':'สวนของฉัน';
   $('#gn').textContent=garden.length;
+  $('#gardenStars').textContent=matchScore;
   $('#gd').classList.remove('morning','afternoon','evening');
   const hour=new Date().getHours();
   const phase=hour<12?'morning':hour<18?'afternoon':'evening';
   $('#gd').classList.add(phase);
-  const flowers=garden.length?garden.map(f=>`<span>${f}</span>`).join(''):'<p style="width:100%;align-self:center">ยังไม่มีดอกไม้ เล่นเกมเพื่อสะสมดอกแรกกันเถอะ 🌱</p>';
+  const flowers=garden.length?garden.map((f,i)=>`<span class="grown" style="animation-delay:${i*.08}s">${f}</span>`).join(''):'<p style="width:100%;align-self:center">ยังไม่มีดอกไม้ เล่นเกมเพื่อสะสมดอกแรกกันเถอะ 🌱</p>';
   const butterflies=Math.floor(garden.length/5);
   const visitors=Array.from({length:butterflies},(_,i)=>`<span class="butterfly" style="left:${8+i*18}%;top:${18+(i%2)*22}%">🦋</span>`).join('');
-  $('#gd').innerHTML=flowers+visitors;
+  const decorMap={bench:'🪑',pond:'💧',lantern:'🏮'},decor=decorations.map(d=>`<span>${decorMap[d]||''}</span>`).join('');
+  $('#gd').innerHTML=flowers+visitors+decor;
 }
 $('#gardenName').oninput=e=>{
   const name=e.target.value.trim();
   $('#gardenTitle').textContent=name?name+' 🌿':'สวนของฉัน';
   try{localStorage.setItem('wwGardenName',name)}catch(e){}
 };
+
+let selectedMood='';
+function initMood(){
+  let saved='';
+  try{saved=localStorage.getItem('wwMoodMemo')||''}catch(e){}
+  $('#moodMemo').value=saved;
+  selectedMood='';
+  document.querySelectorAll('[data-mood]').forEach(b=>b.classList.remove('on'));
+  updateMoodSummary();
+}
+function updateMoodSummary(){
+  const memo=$('#moodMemo').value.trim();
+  const moodText=selectedMood?'อารมณ์วันนี้: '+selectedMood:'อารมณ์วันนี้: ยังไม่ได้เลือก';
+  const memoText=memo?'เรื่องที่อยากบอกหมอ: '+memo:'ยังไม่มีบันทึกเพิ่มเติม';
+  $('#moodSummary').textContent=moodText+'\n'+memoText;
+  try{localStorage.setItem('wwMoodMemo',memo)}catch(e){}
+}
+document.querySelectorAll('[data-mood]').forEach(btn=>btn.onclick=()=>{
+  selectedMood=btn.dataset.mood;
+  document.querySelectorAll('[data-mood]').forEach(b=>b.classList.toggle('on',b===btn));
+  updateMoodSummary();ding();
+});
+$('#moodMemo').oninput=updateMoodSummary;
+$('#moodSpeak').onclick=()=>{updateMoodSummary();speak($('#moodSummary').textContent)};
+
+document.querySelectorAll('[data-decor]').forEach(btn=>btn.onclick=()=>{
+  const decor=btn.dataset.decor;
+  document.querySelectorAll('[data-decor]').forEach(b=>b.classList.toggle('on',b===btn));
+  if(decor==='none')decorations=[];
+  else if(!decorations.includes(decor)&&decorations.length<8)decorations.push(decor);
+  save();drawGarden();ding();
+});
 </script>
 </body>
 </html>
