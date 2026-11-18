@@ -1,1176 +1,405 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>แวะเล่น แวะยิ้ม</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-outer: #F6E9EE;
-      --bg-card: #FFFDFD;
-      --pink-soft: #FCE8EE;
-      --pink-btn: #E67A9E;
-      --pink-btn-dark: #C4587D;
-      --ink: #3B2F35;
-      --ink-muted: #7A6670;
-      --green-soft: #E5F5EC;
-      --green-ink: #2D6A4F;
-      --yellow-soft: #FFF6DC;
-      --yellow-ink: #8A5A00;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      font-family: 'Kanit', sans-serif;
-      background: linear-gradient(180deg, #FDF2F6 0%, #F3E5EC 100%);
-      color: var(--ink);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 12px;
-      font-size: 18px;
-    }
-
-    .game-cabinet {
-      width: 100%;
-      max-width: 520px;
-      height: 92vh;
-      max-height: 840px;
-      background: var(--bg-card);
-      border-radius: 34px;
-      border: 3px solid #F5D5E0;
-      box-shadow: 0 20px 45px rgba(180, 90, 125, 0.16);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 18px;
-      background: #FFFFFF;
-      border-bottom: 2px solid #F7E3EA;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-    }
-
-    .brand-emblem {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: var(--pink-soft);
-      display: grid;
-      place-items: center;
-    }
-
-    .brand h1 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #B84A72;
-      line-height: 1.1;
-    }
-
-    .brand span {
-      font-size: 0.78rem;
-      color: var(--ink-muted);
-    }
-
-    .top-tools {
-      display: flex;
-      gap: 8px;
-    }
-
-    .badge-pill {
-      font-family: 'Kanit', sans-serif;
-      border: none;
-      border-radius: 999px;
-      padding: 7px 14px;
-      font-size: 0.92rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .badge-pill.gold {
-      background: var(--yellow-soft);
-      color: var(--yellow-ink);
-      border: 1.5px solid #F6DC92;
-    }
-
-    .badge-pill.mint {
-      background: var(--green-soft);
-      color: var(--green-ink);
-      border: 1.5px solid #B7E4C7;
-    }
-
-    .badge-pill.mint.playing {
-      background: #40916C;
-      color: #FFFFFF;
-    }
-
-    .screen-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding: 18px;
-    }
-
-    .screen {
-      display: none;
-    }
-
-    .screen.active {
-      display: block;
-    }
-
-    .hero-stage {
-      background: linear-gradient(180deg, #FDF0F4 0%, #F7FBF8 100%);
-      border: 2px solid #F4D4DF;
-      border-radius: 28px;
-      padding: 22px 18px 18px;
-      text-align: center;
-      box-shadow: 0 10px 24px rgba(196, 88, 125, 0.08);
-      margin-bottom: 18px;
-    }
-
-    .avatar-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .avatar-bubble {
-      width: 74px;
-      height: 74px;
-      border-radius: 50%;
-      background: #FFFFFF;
-      border: 3px solid #F7D4DF;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
-      display: grid;
-      place-items: center;
-    }
-
-    .avatar-bubble.main {
-      width: 86px;
-      height: 86px;
-      border-color: #FF8FA3;
-    }
-
-    .hero-tag {
-      font-size: 0.85rem;
-      color: var(--green-ink);
-      font-weight: 600;
-    }
-
-    .hero-title {
-      font-size: 1.8rem;
-      color: #B84A72;
-      margin: 4px 0 6px;
-    }
-
-    .hero-sub {
-      font-size: 0.98rem;
-      color: var(--ink-muted);
-      margin-bottom: 16px;
-    }
-
-    .btn-3d-pink {
-      font-family: 'Kanit', sans-serif;
-      border: none;
-      border-radius: 999px;
-      padding: 13px 26px;
-      font-size: 1.08rem;
-      font-weight: 600;
-      color: #FFFFFF;
-      background: linear-gradient(180deg, #F08CAE 0%, var(--pink-btn) 100%);
-      box-shadow: 0 5px 0 var(--pink-btn-dark);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: transform 0.1s ease;
-    }
-
-    .btn-3d-pink:active {
-      transform: translateY(3px);
-      box-shadow: 0 2px 0 var(--pink-btn-dark);
-    }
-
-    .btn-3d-pink.small {
-      padding: 10px 16px;
-      font-size: 0.95rem;
-    }
-
-    .btn-3d-pink.full {
-      width: 100%;
-    }
-
-    .mini-garden-strip {
-      margin-top: 16px;
-      padding-top: 12px;
-      border-top: 1.5px dashed #F1D2DD;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      min-height: 36px;
-    }
-
-    .section-heading {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .section-heading h3 {
-      font-size: 1.15rem;
-      color: #B84A72;
-    }
-
-    .sub-hint {
-      font-size: 0.82rem;
-      color: var(--ink-muted);
-    }
-
-    .game-cards-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .gcard {
-      font-family: 'Kanit', sans-serif;
-      border-radius: 22px;
-      padding: 14px 10px;
-      text-align: center;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-      transition: transform 0.1s ease;
-    }
-
-    .gcard:active {
-      transform: translateY(3px);
-    }
-
-    .c-pink {
-      background: var(--pink-soft);
-      border: 2px solid #F5C2D2;
-      box-shadow: 0 5px 0 #E5A4B8;
-    }
-
-    .c-green {
-      background: var(--green-soft);
-      border: 2px solid #B7E4C7;
-      box-shadow: 0 5px 0 #8FCBA5;
-    }
-
-    .c-yellow {
-      background: var(--yellow-soft);
-      border: 2px solid #F6DC92;
-      box-shadow: 0 5px 0 #E3C268;
-    }
-
-    .gcard strong {
-      font-size: 1rem;
-    }
-
-    .gcard small {
-      font-size: 0.78rem;
-      color: var(--ink-muted);
-    }
-
-    .sub-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-
-    .sub-header h2 {
-      font-size: 1.3rem;
-      color: #B84A72;
-    }
-
-    .btn-ghost {
-      font-family: 'Kanit', sans-serif;
-      border: 2px solid #E8CFD8;
-      background: #FFFFFF;
-      color: var(--ink);
-      border-radius: 999px;
-      padding: 8px 16px;
-      font-size: 0.92rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-hint {
-      font-family: 'Kanit', sans-serif;
-      border: 1.5px solid #F6DC92;
-      background: var(--yellow-soft);
-      color: var(--yellow-ink);
-      border-radius: 999px;
-      padding: 6px 14px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .big-game-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .big-gcard {
-      font-family: 'Kanit', sans-serif;
-      border-radius: 24px;
-      padding: 16px 18px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      text-align: left;
-      cursor: pointer;
-    }
-
-    .big-icon {
-      font-size: 1.8rem;
-      width: 52px;
-      height: 52px;
-      border-radius: 16px;
-      background: #FFFFFF;
-      display: grid;
-      place-items: center;
-      flex-shrink: 0;
-    }
-
-    .big-gcard div {
-      flex: 1;
-    }
-
-    .big-gcard h3 {
-      font-size: 1.15rem;
-    }
-
-    .big-gcard p {
-      font-size: 0.88rem;
-      color: var(--ink-muted);
-    }
-
-    .go-pill {
-      background: #FFFFFF;
-      padding: 6px 16px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-
-    .play-heading {
-      font-size: 1.35rem;
-      color: #B84A72;
-    }
-
-    .play-desc {
-      font-size: 0.9rem;
-      color: var(--ink-muted);
-      margin-bottom: 12px;
-    }
-
-    .board-card {
-      background: #FFFFFF;
-      border: 2px solid #F4D9E2;
-      border-radius: 26px;
-      padding: 14px;
-    }
-
-    .board-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--pink-soft);
-      padding: 8px 14px;
-      border-radius: 14px;
-      margin-bottom: 12px;
-      font-weight: 600;
-      font-size: 0.92rem;
-      color: #B84A72;
-    }
-
-    .board-canvas {
-      min-height: 240px;
-      margin-bottom: 12px;
-    }
-
-    .board-note {
-      text-align: center;
-      background: #FFF8FA;
-      padding: 8px 12px;
-      border-radius: 12px;
-      font-size: 0.88rem;
-      color: var(--ink-muted);
-      margin-bottom: 12px;
-    }
-
-    .board-footer {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .memory-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-
-    .mem-card {
-      aspect-ratio: 3 / 4;
-      perspective: 600px;
-      border: none;
-      background: none;
-      cursor: pointer;
-    }
-
-    .mem-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.35s ease;
-      transform-style: preserve-3d;
-    }
-
-    .mem-card.flipped .mem-inner,
-    .mem-card.matched .mem-inner {
-      transform: rotateY(180deg);
-    }
-
-    .mem-front,
-    .mem-back {
-      position: absolute;
-      inset: 0;
-      backface-visibility: hidden;
-      border-radius: 14px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .mem-front {
-      background: var(--pink-btn);
-      color: #FFF;
-      font-size: 1.3rem;
-    }
-
-    .mem-back {
-      background: #FFFDFD;
-      border: 2px solid #F4A5BE;
-      transform: rotateY(180deg);
-    }
-
-    .mem-card.matched .mem-back {
-      background: var(--green-soft);
-      border-color: #40916C;
-    }
-
-    .mem-back span {
-      font-size: 0.72rem;
-      color: var(--ink-muted);
-    }
-
-    .spot-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .spot-panel {
-      border-radius: 16px;
-      overflow: hidden;
-      border: 2px solid #D8E2DC;
-    }
-
-    .spot-head {
-      text-align: center;
-      font-size: 0.78rem;
-      font-weight: 600;
-      background: var(--green-soft);
-      color: var(--green-ink);
-      padding: 3px;
-    }
-
-    .spot-svg {
-      width: 100%;
-      display: block;
-    }
-
-    .ring-mark {
-      fill: none;
-      stroke: #E63946;
-      stroke-width: 4;
-      opacity: 0;
-    }
-
-    .ring-mark.found {
-      opacity: 1;
-    }
-
-    .catcher-area {
-      position: relative;
-      height: 250px;
-      border-radius: 18px;
-      overflow: hidden;
-      background: linear-gradient(180deg, #FDF0F4 0%, #E5F5EC 78%, #74C69D 78%);
-      touch-action: none;
-    }
-
-    .fall-item {
-      position: absolute;
-      width: 46px;
-      height: 46px;
-      transform: translate(-50%, -50%);
-      cursor: pointer;
-    }
-
-    .basket-box {
-      position: absolute;
-      bottom: 10px;
-      width: 82px;
-      height: 44px;
-      transform: translateX(-50%);
-      pointer-events: none;
-    }
-
-    .dir-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .dir-btn {
-      font-family: 'Kanit', sans-serif;
-      padding: 10px;
-      border-radius: 14px;
-      border: 1.5px solid #F6DC92;
-      background: var(--yellow-soft);
-      color: var(--yellow-ink);
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .garden-stage {
-      position: relative;
-      height: 240px;
-      border-radius: 24px;
-      overflow: hidden;
-      border: 2px solid #B7E4C7;
-      background: linear-gradient(180deg, #FDF0F4 0%, #E5F5EC 58%, #52B788 58%);
-      margin-bottom: 14px;
-    }
-
-    .sun-circle {
-      position: absolute;
-      top: 14px;
-      right: 18px;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #FFD166;
-    }
-
-    .garden-decor {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .garden-lawn {
-      position: absolute;
-      bottom: 0;
-      inset-inline: 0;
-      height: 44%;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 8px;
-    }
-
-    .planted-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .gflower-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-
-    .garden-toast {
-      position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #FFFFFF;
-      border: 1.5px solid #F4A5BE;
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .garden-toast.hidden {
-      display: none;
-    }
-
-    .garden-stat-box {
-      background: #FFFFFF;
-      border: 1.5px solid #F4D9E2;
-      border-radius: 20px;
-      padding: 12px 16px;
-      margin-bottom: 14px;
-    }
-
-    .garden-stat-box p {
-      font-size: 0.85rem;
-      color: var(--ink-muted);
-      margin-bottom: 8px;
-    }
-
-    .progress-bar {
-      height: 10px;
-      background: var(--pink-soft);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--pink-btn);
-      transition: width 0.3s ease;
-    }
-
-    .bottom-nav {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      background: #FFFFFF;
-      border-top: 2px solid #F7E3EA;
-      padding: 6px 8px;
-    }
-
-    .bnav-btn {
-      font-family: 'Kanit', sans-serif;
-      border: none;
-      background: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      padding: 6px;
-      border-radius: 14px;
-      color: var(--ink-muted);
-      cursor: pointer;
-    }
-
-    .bnav-btn.active {
-      background: var(--pink-soft);
-      color: #B84A72;
-      font-weight: 700;
-    }
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(59, 47, 53, 0.5);
-      display: grid;
-      place-items: center;
-      padding: 20px;
-    }
-
-    .modal-overlay.hidden {
-      display: none;
-    }
-
-    .modal-box {
-      background: #FFFFFF;
-      border-radius: 28px;
-      padding: 24px 20px;
-      max-width: 340px;
-      width: 100%;
-      text-align: center;
-      border: 3px solid #F4A5BE;
-    }
-
-    .modal-badge {
-      font-size: 2.2rem;
-    }
-
-    .modal-box h2 {
-      color: #B84A72;
-      margin: 6px 0;
-    }
-
-    .modal-box p {
-      color: var(--ink-muted);
-      margin-bottom: 16px;
-    }
-
-    .modal-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    @media (max-width: 460px) {
-      body { padding: 0; }
-      .game-cabinet { border-radius: 0; height: 100vh; max-height: none; border: none; }
-      .game-cards-row { grid-template-columns: 1fr; }
-      .spot-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>แวะเล่น แวะยิ้ม</title>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#3d9a5f;--gd:#2f7a4a;--cream:#fffaf0;--pink:#ff8a7a;--y:#ffd45c;--ink:#2d4a3a;--bg:#dff2d3;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b2b22}}
+:root[data-theme="dark"]{--bg:#1b2b22}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--bg);font-family:'Mali','Sarabun',system-ui,sans-serif;color:var(--ink);display:flex;justify-content:center}
+#app{position:relative;width:100%;max-width:480px;height:100%;overflow:hidden;background:linear-gradient(#bfe6fb 0,#e9f7e4 45%,#d6efc4 100%)}
+.scr{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;padding:16px 16px 20px;overflow:auto;text-align:center;gap:12px}
+.scr.on{display:flex;animation:in .35s}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+h1{margin:6px 0 0;font-size:44px;line-height:1.05;color:var(--gd);text-shadow:0 3px 0 #fff}
+h1 em{display:block;color:var(--pink);font-style:normal}
+h2{margin:0;font-size:26px;color:var(--gd)}
+p{margin:0;font-size:16px}
+.sub{font-size:15px;opacity:1;color:#3f604f}
+.sun{font-size:120px;line-height:1;animation:bob 2.4s ease-in-out infinite;filter:drop-shadow(0 6px 0 rgba(0,0,0,.08))}
+@keyframes bob{50%{transform:translateY(-10px) rotate(4deg)}}
+.btn{font:700 20px 'Mali',sans-serif;min-height:64px;padding:0 26px;border:0;border-radius:30px;background:var(--g);color:#fff;box-shadow:0 5px 0 var(--gd);cursor:pointer;transition:transform .1s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--gd)}
+.btn.p{background:var(--pink);box-shadow:0 5px 0 #d9604f}
+.btn.w{background:#fff;color:var(--gd);box-shadow:0 4px 0 #cfe3cc;font-size:17px}
+.btn.big{width:100%;max-width:320px;font-size:24px}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.pill{margin-top:auto;background:var(--g);color:#fff;border-radius:30px;padding:10px 18px;font-size:14px;font-weight:700}
+.menu{width:100%;min-height:64px;display:flex;align-items:center;gap:14px;text-align:left;border:3px solid;border-radius:22px;padding:14px;font:inherit;color:var(--ink);cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.08)}
+.menu b{display:block;font-size:22px}
+.menu small{font-size:14px}
+.menu span{font-size:44px}
+.menu:active{transform:scale(.98)}
+.m1{background:#ffe3e0;border-color:#ffb3a8}.m2{background:#fff1c4;border-color:#ffd45c}.m3{background:#e0f5d6;border-color:#a8dc92}
+.bar{display:flex;gap:10px;width:100%;justify-content:center}
+.chip{background:#fff;border-radius:20px;padding:6px 14px;font-weight:700;font-size:16px;box-shadow:0 3px 0 #cfe3cc}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:340px}
+.card{aspect-ratio:1;border:0;border-radius:20px;background:linear-gradient(135deg,#7fcf94,#4fb072);font-size:0;box-shadow:0 5px 0 var(--gd);cursor:pointer;position:relative}
+.card::after{content:'?';position:absolute;inset:0;display:grid;place-items:center;font:700 40px 'Mali';color:#fff;opacity:.8}
+.card span{font-size:52px}
+.card.open,.card.done,.card.peek{background:#e8f8e0;box-shadow:0 5px 0 #b8dfae;font-size:52px}
+.card.open::after,.card.done::after,.card.peek::after{content:none}
+.card.done{animation:pop .4s}
+@keyframes pop{50%{transform:scale(1.12)}}
+.sc{position:relative;width:100%;max-width:340px;aspect-ratio:16/9;border-radius:18px;overflow:hidden;border:4px solid #fff;box-shadow:0 4px 0 #b8dfae;background:linear-gradient(#bfe6fb 0,#d9f2c8 55%,#9fd57e 56%);cursor:pointer;flex:none}
+.sc i{position:absolute;transform:translate(-50%,-50%);line-height:1;font-style:normal;pointer-events:none}
+.fence{position:absolute;left:0;right:0;top:52%;height:8px;background:#fff;opacity:.8}
+.ring{position:absolute;width:56px;height:56px;border:4px solid #ff5a4a;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
+.ring.h{border-color:#ffb300;animation:pulse .5s 3}
+@keyframes pulse{50%{transform:translate(-50%,-50%) scale(1.4)}}
+.shake{animation:sh .3s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.badge{display:inline-block;background:#ff5a4a;color:#fff;border-radius:50%;min-width:24px;height:24px;line-height:24px;font-size:14px;margin-left:6px}
+.ov{position:absolute;inset:0;background:rgba(255,250,240,.93);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:5}
+.ov.on{display:flex}
+.big-f{font-size:90px;animation:bob 1.6s infinite}
+.box{background:#fff;border-radius:22px;padding:14px 34px;font-size:56px;font-weight:700;border:3px solid #ffe9a8}
+.fall{position:absolute;top:-30px;font-size:24px;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.garden{width:100%;flex:1;min-height:150px;border-radius:22px;background:linear-gradient(#dff3ff 0,#e9f7e4 35%,#8fd072 36%);border:4px solid #fff;display:flex;flex-wrap:wrap;align-content:flex-end;justify-content:center;gap:2px;padding:10px;overflow:auto;font-size:38px}
+.garden span{animation:pop .5s}
+.font-control{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;z-index:50;min-width:68px;min-height:64px;border:3px solid #fff;border-radius:32px;background:#fff;color:var(--gd);box-shadow:0 4px 12px rgba(45,74,58,.18);font:700 18px 'Mali',sans-serif;cursor:pointer}
+.sound-control{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);right:86px;z-index:50;width:64px;height:64px;border:3px solid #fff;border-radius:32px;background:#fff;box-shadow:0 4px 12px rgba(45,74,58,.18);font-size:28px;cursor:pointer}
+.encourage{min-height:24px;margin:-4px 0 2px;font-size:17px;font-weight:700;color:#2f7a4a}
+.auto-hint{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);z-index:12;width:min(330px,86%);min-height:64px;display:none;align-items:center;justify-content:center;border:3px solid #fff;border-radius:22px;background:#fff1c4;color:#2f5d43;box-shadow:0 5px 14px rgba(45,74,58,.18);font:700 17px 'Mali',sans-serif;padding:10px 14px}
+.auto-hint.on{display:flex}
+#app[data-font="2"] h1{font-size:48px}
+#app[data-font="2"] h2{font-size:30px}
+#app[data-font="2"] p,#app[data-font="2"] .sub,#app[data-font="2"] .menu small{font-size:18px}
+#app[data-font="2"] .btn,#app[data-font="2"] .chip{font-size:22px}
+#app[data-font="2"] .menu b{font-size:24px}
+#app[data-font="3"] h1{font-size:52px}
+#app[data-font="3"] h2{font-size:34px}
+#app[data-font="3"] p,#app[data-font="3"] .sub,#app[data-font="3"] .menu small{font-size:20px}
+#app[data-font="3"] .btn,#app[data-font="3"] .chip{font-size:24px}
+#app[data-font="3"] .menu b{font-size:26px}
+.level-row{display:flex;gap:8px;width:100%;justify-content:center}
+.level-btn{min-height:64px;flex:1;max-width:110px;border:2px solid #a8dc92;border-radius:18px;background:#fff;color:#2f7a4a;font:700 15px 'Mali',sans-serif;cursor:pointer}
+.level-btn.on{background:#fff1c4;border-color:#e6aa30;box-shadow:0 4px 0 #d7a842}
+.timer-btn{min-height:64px;border:2px solid #cfe3cc;border-radius:20px;background:#fff;color:#2f7a4a;font:700 16px 'Mali',sans-serif;padding:8px 14px;cursor:pointer}
+.wait-row{display:flex;gap:8px;width:100%;justify-content:center}
+.wait-btn{min-height:64px;flex:1;max-width:140px;border:2px solid #ffd45c;border-radius:18px;background:#fff;color:#2f7a4a;font:700 15px 'Mali',sans-serif;cursor:pointer}
+.wait-btn.on{background:#fff1c4;box-shadow:0 4px 0 #d7a842}
+.garden-name{width:min(280px,80%);min-height:64px;border:3px solid #fff;border-radius:18px;background:rgba(255,255,255,.92);color:var(--ink);font:700 20px 'Mali',sans-serif;text-align:center}
+.garden-wrap{position:relative}
+.garden-wrap.morning{background:linear-gradient(#bfe6fb 0,#fff1c4 35%,#8fd072 36%)}
+.garden-wrap.afternoon{background:linear-gradient(#ffe4a1 0,#fff3c9 35%,#8fd072 36%)}
+.garden-wrap.evening{background:linear-gradient(#9ca8cc 0,#ddb7a9 35%,#6f9f5c 36%)}
+.garden span{display:inline-block;animation:sway 2.6s ease-in-out infinite}
+.garden span:nth-child(3n){animation-delay:-.8s}
+.garden span:nth-child(3n+1){animation-delay:-1.6s}
+.garden .butterfly{position:absolute;animation:fly 8s ease-in-out infinite;font-size:30px;pointer-events:none}
+#start.cover-start{padding:0;gap:0;background:url('app-cover-mobile.png') center center/cover no-repeat;overflow:hidden}
+#start.cover-start h1,#start.cover-start .sub,#start.cover-start .sun,#start.cover-start .pill,#start.cover-start .wait-row{display:none}
+#start.cover-start .cover-play{position:absolute;left:50%;bottom:12.5%;transform:translateX(-50%);width:78%;max-width:360px;height:68px;font-size:24px;border:4px solid rgba(255,255,255,.8);background:#61a96f;z-index:2}
+#start.cover-start .cover-play:active{transform:translate(-50%,4px)}
+@media (min-width:701px){
+  #app{max-width:1365px;background:#dff2d3}
+  #start.cover-start{background-image:url('app-cover-desktop.png');background-size:cover;background-position:center}
+  #start.cover-start .cover-play{bottom:7.5%;width:420px;height:72px;font-size:26px}
+  .scr:not(#start){max-width:680px;margin:0 auto}
+  .scr:not(#start) h2{font-size:32px}
+  .menu{max-width:580px}
+  .grid{max-width:520px;grid-template-columns:repeat(4,1fr)}
+  .sc{max-width:520px}
+  .garden{max-height:620px}
+}
+@media (max-width:700px){
+  #start.cover-start{background-image:url('app-cover-mobile.png')}
+}
+@keyframes sway{50%{transform:rotate(5deg) translateY(-3px)}}
+@keyframes fly{25%{transform:translate(90px,-25px)}50%{transform:translate(170px,15px)}75%{transform:translate(60px,35px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
 </head>
 <body>
+<div id="app">
+<button class="font-control" id="fontControl" type="button" aria-label="ปรับขนาดตัวอักษร">A</button>
+<button class="sound-control" id="soundControl" type="button" aria-label="เปิดหรือปิดเสียง">🔊</button>
 
-<div class="game-cabinet">
+<section class="scr on cover-start" id="start">
+  <h1>แวะเล่น<em>แวะยิ้ม</em></h1>
+  <p class="sub">เกมพักใจระหว่างรอรับบริการ<br>โรงพยาบาลมะเร็งลำปาง</p>
+  <div class="sun">🌻</div>
+  <button class="btn big cover-play" data-go="menu">▶ เริ่มเล่นเลย</button>
+  <p class="sub">แค่สักนิด... ก็มีความสุขได้ในทุกวัน</p>
+  <div class="pill">🌼 เล่นสั้น ๆ · ไม่ต้องสมัคร · หยุดได้ทุกเมื่อ 🌼</div>
+</section>
 
-  <header class="top-bar">
-    <div class="brand" onclick="switchScreen('home')">
-      <div class="brand-emblem">
-        <svg viewBox="0 0 36 36" width="24" height="24">
-          <circle cx="18" cy="9" r="5.5" fill="#FF6B8B"/>
-          <circle cx="26" cy="15" r="5.5" fill="#FF6B8B"/>
-          <circle cx="23" cy="25" r="5.5" fill="#FF6B8B"/>
-          <circle cx="13" cy="25" r="5.5" fill="#FF6B8B"/>
-          <circle cx="10" cy="15" r="5.5" fill="#FF6B8B"/>
-          <circle cx="18" cy="18" r="5" fill="#FFD166"/>
-        </svg>
-      </div>
-      <div>
-        <h1>แวะเล่น แวะยิ้ม</h1>
-        <span id="gardenRank">สวนเริ่มต้น</span>
-      </div>
-    </div>
-
-    <div class="top-tools">
-      <button class="badge-pill gold" onclick="switchScreen('garden')">
-        <span>❀</span>
-        <b id="topFlowerCount">6</b>
-      </button>
-      <button id="musicButton" class="badge-pill mint">
-        <span id="musicIcon">♪</span>
-        <span id="musicText">เปิดเสียง</span>
-      </button>
-    </div>
-  </header>
-
-  <main class="screen-scroll">
-
-    <section id="screen-home" class="screen active">
-      <div class="hero-stage">
-        <div class="avatar-row">
-          <div class="avatar-bubble">
-            <svg viewBox="0 0 80 80" width="64" height="64">
-              <circle cx="40" cy="40" r="38" fill="#FFF1F4"/>
-              <circle cx="40" cy="34" r="18" fill="#F6D5C3"/>
-              <path d="M22 30 Q40 12 58 30" fill="#D9DCE2"/>
-              <circle cx="34" cy="34" r="2.3" fill="#3A2E2A"/>
-              <circle cx="46" cy="34" r="2.3" fill="#3A2E2A"/>
-              <path d="M34 42 Q40 47 46 42" stroke="#B85D68" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-              <path d="M22 66 Q22 52 40 52 Q58 52 58 66 Z" fill="#7CC6FE"/>
-            </svg>
-          </div>
-
-          <div class="avatar-bubble main">
-            <svg viewBox="0 0 80 80" width="72" height="72">
-              <circle cx="40" cy="40" r="38" fill="#FFE6EC"/>
-              <circle cx="40" cy="35" r="18" fill="#F6D5C3"/>
-              <circle cx="26" cy="24" r="8" fill="#C9CDD4"/>
-              <circle cx="54" cy="24" r="8" fill="#C9CDD4"/>
-              <path d="M23 31 Q40 15 57 31" fill="#C9CDD4"/>
-              <circle cx="34" cy="35" r="2.3" fill="#3A2E2A"/>
-              <circle cx="46" cy="35" r="2.3" fill="#3A2E2A"/>
-              <path d="M34 43 Q40 48 46 43" stroke="#B85D68" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-              <path d="M21 67 Q21 52 40 52 Q59 52 59 67 Z" fill="#FF85A1"/>
-            </svg>
-          </div>
-
-          <div class="avatar-bubble">
-            <svg viewBox="0 0 80 80" width="64" height="64">
-              <circle cx="40" cy="40" r="38" fill="#FFF6E5"/>
-              <ellipse cx="22" cy="38" rx="9" ry="15" fill="#B57B4A" transform="rotate(-15 22 38)"/>
-              <ellipse cx="58" cy="38" rx="9" ry="15" fill="#B57B4A" transform="rotate(15 58 38)"/>
-              <circle cx="40" cy="42" r="18" fill="#D99B66"/>
-              <ellipse cx="40" cy="47" rx="10" ry="7" fill="#F6DEC8"/>
-              <circle cx="34" cy="38" r="2.3" fill="#3A2E2A"/>
-              <circle cx="46" cy="38" r="2.3" fill="#3A2E2A"/>
-              <ellipse cx="40" cy="44" rx="4" ry="3" fill="#3A2E2A"/>
-            </svg>
-          </div>
-        </div>
-
-        <span class="hero-tag">ยินดีต้อนรับสู่สวนแห่งความสุข</span>
-        <h2 class="hero-title">แวะเล่น แวะยิ้ม</h2>
-        <p class="hero-sub">เกมพักใจระหว่างรอรับบริการ<br>พักสักนิด เล่นสักหน่อย เติมรอยยิ้มให้ทุกวัน</p>
-
-        <button class="btn-3d-pink" onclick="switchScreen('games')">
-          <span>เริ่มเล่นเกม</span>
-          <span class="btn-icon">▶</span>
-        </button>
-
-        <div class="mini-garden-strip" id="homeFlowerStrip"></div>
-      </div>
-
-      <div class="section-heading">
-        <h3>เลือกเกมที่คุณชอบ</h3>
-        <span class="sub-hint">แตะการ์ดเพื่อเริ่มเล่นได้เลย</span>
-      </div>
-
-      <div class="game-cards-row">
-        <button class="gcard c-pink" onclick="startGame('match')">
-          <div class="gcard-art">
-            <svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true">
-              <rect x="8" y="10" width="22" height="32" rx="6" fill="#FFF" stroke="#E67A9E" stroke-width="2"/>
-              <rect x="34" y="22" width="22" height="32" rx="6" fill="#FFF" stroke="#E67A9E" stroke-width="2"/>
-              <circle cx="19" cy="26" r="6" fill="#F4A5BE"/><circle cx="45" cy="38" r="6" fill="#F4A5BE"/>
-            </svg>
-          </div>
-          <strong>จับคู่ภาพ</strong><small>ฝึกความจำแบบเพลิน ๆ</small>
-        </button>
-        <button class="gcard c-green" onclick="startGame('spot')">
-          <div class="gcard-art">
-            <svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true">
-              <circle cx="27" cy="27" r="15" fill="#FFF" stroke="#40916C" stroke-width="4"/>
-              <path d="M38 38 L53 53" stroke="#40916C" stroke-width="6" stroke-linecap="round"/>
-              <circle cx="27" cy="27" r="5" fill="#FFD166"/>
-            </svg>
-          </div>
-          <strong>จับผิดภาพ</strong><small>สังเกตความแตกต่าง</small>
-        </button>
-        <button class="gcard c-yellow" onclick="startGame('catch')">
-          <div class="gcard-art">
-            <svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true">
-              <path d="M13 34 L51 34 L45 54 L19 54 Z" fill="#D99B66" stroke="#8A5A00" stroke-width="2"/>
-              <path d="M18 34 Q32 20 46 34" fill="none" stroke="#8A5A00" stroke-width="3"/>
-              <path d="M32 7 C25 16 24 20 32 24 C40 20 39 16 32 7Z" fill="#E67A9E"/>
-            </svg>
-          </div>
-          <strong>รับดอกไม้</strong><small>เก็บดอกไม้ใส่ตะกร้า</small>
-        </button>
-      </div>
-    </section>
-
-    <section id="screen-games" class="screen">
-      <div class="sub-header"><h2>เกมพักใจ</h2><button class="btn-ghost" onclick="switchScreen('home')">← หน้าหลัก</button></div>
-      <p class="play-desc">เลือกเกมที่อยากเล่นได้เลย เล่นสบาย ๆ ไม่ต้องรีบ</p>
-      <div class="big-game-list">
-        <button class="big-gcard c-pink" onclick="startGame('match')"><span class="big-icon">▦</span><div><h3>จับคู่ภาพ</h3><p>เปิดภาพทีละใบ แล้วหาคู่ภาพที่เหมือนกัน</p></div><span class="go-pill">เล่น</span></button>
-        <button class="big-gcard c-green" onclick="startGame('spot')"><span class="big-icon">⌕</span><div><h3>จับผิดภาพ</h3><p>มองหาจุดที่แตกต่างกันในภาพสองภาพ</p></div><span class="go-pill">เล่น</span></button>
-        <button class="big-gcard c-yellow" onclick="startGame('catch')"><span class="big-icon">✿</span><div><h3>รับดอกไม้</h3><p>แตะดอกไม้ที่ร่วงลงมาเพื่อสะสมคะแนน</p></div><span class="go-pill">เล่น</span></button>
-      </div>
-    </section>
-
-    <section id="screen-match" class="screen">
-      <div class="sub-header"><h2>จับคู่ภาพ</h2><button class="btn-ghost" onclick="switchScreen('games')">← กลับ</button></div>
-      <p class="play-desc">แตะเปิดภาพครั้งละ 2 ใบ แล้วหาภาพที่เหมือนกันให้ครบ</p>
-      <div class="board-card">
-        <div class="board-top"><span>คู่ที่พบ <b id="matchPairs">0/6</b></span><span>จำนวนครั้ง <b id="matchMoves">0</b></span></div>
-        <div class="board-canvas"><div class="memory-grid" id="memoryGrid"></div></div>
-        <div class="board-note" id="matchMessage" aria-live="polite">ค่อย ๆ เล่น ไม่ต้องรีบนะ</div>
-        <div class="board-footer"><button class="btn-ghost" onclick="resetMatch()">เริ่มใหม่</button><button class="btn-3d-pink small" onclick="switchScreen('games')">เลือกเกมอื่น</button></div>
-      </div>
-    </section>
-
-    <section id="screen-spot" class="screen">
-      <div class="sub-header"><h2>จับผิดภาพ</h2><button class="btn-ghost" onclick="switchScreen('games')">← กลับ</button></div>
-      <p class="play-desc">แตะบริเวณที่คิดว่าแตกต่างกัน มีทั้งหมด 3 จุด</p>
-      <div class="board-card">
-        <div class="board-top"><span>พบแล้ว <b id="spotCount">0/3</b></span><span id="spotStatus">กำลังสังเกต</span></div>
-        <div class="spot-grid">
-          <div class="spot-panel"><div class="spot-head">ภาพที่ 1</div>
-            <svg class="spot-svg" viewBox="0 0 160 160" role="img" aria-label="ภาพสวนที่หนึ่ง">
-              <rect width="160" height="160" fill="#EAF7EF"/><circle cx="128" cy="25" r="13" fill="#FFD166"/>
-              <path d="M0 112 Q45 85 85 112 T160 108 V160 H0Z" fill="#91CBA5"/>
-              <rect x="66" y="73" width="9" height="42" rx="3" fill="#9B6B43"/><circle cx="70" cy="61" r="25" fill="#5AA879"/>
-              <circle cx="53" cy="58" r="13" fill="#70B98B"/><circle cx="88" cy="57" r="13" fill="#70B98B"/>
-              <path d="M24 116 Q24 103 37 103 Q50 103 50 116Z" fill="#F4A5BE"/><path d="M30 104 Q37 91 44 104" fill="#E67A9E"/>
-              <path d="M112 115 Q112 103 124 103 Q136 103 136 115Z" fill="#FFF"/><circle cx="124" cy="100" r="7" fill="#D99B66"/>
-              <g class="ring-mark" id="spotRing1"><circle cx="128" cy="25" r="12"/></g>
-              <g class="ring-mark" id="spotRing2"><circle cx="37" cy="105" r="13"/></g>
-              <g class="ring-mark" id="spotRing3"><circle cx="124" cy="100" r="12"/></g>
-              <rect x="0" y="0" width="160" height="160" fill="transparent" data-spot="all"/>
-            </svg>
-          </div>
-          <div class="spot-panel"><div class="spot-head">ภาพที่ 2</div>
-            <svg class="spot-svg" viewBox="0 0 160 160" role="img" aria-label="ภาพสวนที่สอง">
-              <rect width="160" height="160" fill="#EAF7EF"/><circle cx="128" cy="25" r="13" fill="#F4A5BE"/>
-              <path d="M0 112 Q45 85 85 112 T160 108 V160 H0Z" fill="#91CBA5"/>
-              <rect x="66" y="73" width="9" height="42" rx="3" fill="#9B6B43"/><circle cx="70" cy="61" r="25" fill="#5AA879"/>
-              <circle cx="53" cy="58" r="13" fill="#70B98B"/><circle cx="88" cy="57" r="13" fill="#70B98B"/>
-              <path d="M24 116 Q24 103 37 103 Q50 103 50 116Z" fill="#F4A5BE"/>
-              <path d="M112 115 Q112 103 124 103 Q136 103 136 115Z" fill="#FFF"/><circle cx="124" cy="100" r="7" fill="#D99B66"/>
-              <g class="ring-mark" id="spotRing1b"><circle cx="128" cy="25" r="12"/></g>
-              <g class="ring-mark" id="spotRing2b"><circle cx="37" cy="105" r="13"/></g>
-              <g class="ring-mark" id="spotRing3b"><circle cx="124" cy="100" r="12"/></g>
-              <rect x="0" y="0" width="160" height="160" fill="transparent"/>
-            </svg>
-          </div>
-        </div>
-        <div class="board-note" id="spotMessage" aria-live="polite">ลองสังเกตดวงอาทิตย์ ดอกไม้ และน้องหมา</div>
-        <button class="btn-3d-pink small full" onclick="resetSpot()">เริ่มรอบใหม่</button>
-      </div>
-    </section>
-
-    <section id="screen-catch" class="screen">
-      <div class="sub-header"><h2>รับดอกไม้</h2><button class="btn-ghost" onclick="switchScreen('games')">← กลับ</button></div>
-      <p class="play-desc">แตะดอกไม้ที่ปรากฏในสวนเพื่อเก็บคะแนน เล่นได้ตามจังหวะของตัวเอง</p>
-      <div class="board-card">
-        <div class="board-top"><span>คะแนน <b id="catchScore">0</b></span><span>เวลา <b id="catchTime">30</b> วินาที</span></div>
-        <div class="catcher-area" id="catcherArea">
-          <div class="basket-box" id="basketBox"><svg viewBox="0 0 82 44" width="82" height="44"><path d="M7 10 H75 L66 40 H16Z" fill="#C58A55" stroke="#8A5A00" stroke-width="3"/><path d="M13 18 H69 M17 27 H65" stroke="#F4D2A8" stroke-width="3"/></svg></div>
-        </div>
-        <div class="dir-row"><button class="dir-btn" onclick="moveBasket(-1)">← เลื่อนไปซ้าย</button><button class="dir-btn" onclick="moveBasket(1)">เลื่อนไปขวา →</button></div>
-        <div class="board-note" id="catchMessage" aria-live="polite">กดเริ่มเกม แล้วแตะดอกไม้ที่ปรากฏ</div>
-        <button class="btn-3d-pink small full" id="catchStart" onclick="startCatch()">เริ่มเกม</button>
-      </div>
-    </section>
-
-    <section id="screen-garden" class="screen">
-      <div class="sub-header"><h2>สวนของฉัน</h2><button class="btn-ghost" onclick="switchScreen('home')">← หน้าหลัก</button></div>
-      <p class="play-desc">ทุกครั้งที่เล่นเกมสำเร็จ คุณจะได้รับดอกไม้เพื่อเติมสีสันให้สวน</p>
-      <div class="garden-stage">
-        <div class="sun-circle"></div>
-        <div class="garden-decor">
-          <svg viewBox="0 0 360 240" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true">
-            <g fill="#FFF" opacity=".9"><ellipse cx="55" cy="42" rx="25" ry="10"/><ellipse cx="72" cy="38" rx="18" ry="13"/><ellipse cx="260" cy="68" rx="28" ry="10"/><ellipse cx="279" cy="64" rx="18" ry="13"/></g>
-            <path d="M0 170 Q90 145 180 170 T360 165 V240 H0Z" fill="#52B788"/>
-          </svg>
-        </div>
-        <div class="garden-toast" id="gardenToast">ยินดีต้อนรับสู่สวนของคุณ</div>
-        <div class="garden-lawn"><div class="planted-row" id="plantedFlowers"></div></div>
-      </div>
-      <div class="garden-stat-box">
-        <p>ดอกไม้ที่สะสมได้ <b id="gardenFlowerCount">0</b> ดอก</p>
-        <div class="progress-bar"><div class="progress-fill" id="gardenProgress" style="width:0%"></div></div>
-        <p id="gardenProgressText" style="margin:8px 0 0">สะสมดอกไม้เพื่อขยายสวนของคุณ</p>
-      </div>
-      <button class="btn-3d-pink small full" onclick="switchScreen('games')">กลับไปเล่นเกม</button>
-    </section>
-  </main>
-
-  <nav class="bottom-nav" aria-label="เมนูหลัก">
-    <button class="bnav-btn active" data-screen="home" onclick="switchScreen('home')"><span>⌂</span><small>หน้าหลัก</small></button>
-    <button class="bnav-btn" data-screen="games" onclick="switchScreen('games')"><span>▦</span><small>เกม</small></button>
-    <button class="bnav-btn" data-screen="garden" onclick="switchScreen('garden')"><span>❀</span><small>สวนของฉัน</small></button>
-  </nav>
-</div>
-
-<div class="modal-overlay hidden" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-  <div class="modal-box">
-    <div class="modal-badge" id="modalBadge">🌷</div>
-    <h2 id="modalTitle">เก่งมากเลย!</h2>
-    <p id="modalText">คุณทำสำเร็จแล้ว</p>
-    <div class="modal-stack">
-      <button class="btn-3d-pink full" id="modalPrimary" onclick="closeModal()">เล่นต่อ</button>
-      <button class="btn-ghost" onclick="closeModal();switchScreen('games')">เลือกเกมอื่น</button>
-    </div>
+<section class="scr" id="menu">
+  <h2>เลือกเกมที่คุณชอบ</h2>
+  <p class="sub" id="sessionHint">เล่นได้ตามอารมณ์ ไม่ต้องรีบ</p>
+  <div class="wait-row" aria-label="เลือกเวลาที่รอ">
+    <button class="wait-btn" type="button" data-wait="3">สัก 3 นาที</button>
+    <button class="wait-btn" type="button" data-wait="10">สัก 10 นาที</button>
+    <button class="wait-btn on" type="button" data-wait="0">ไม่รีบ</button>
   </div>
+  <button class="menu m1" data-go="match"><span>🃏</span><div><b>จับคู่ภาพ</b><small>หาภาพที่เหมือนกัน</small></div></button>
+  <button class="menu m2" data-go="spot"><span>🔍</span><div><b>จับผิดภาพ</b><small>สังเกตจุดที่แตกต่าง</small></div></button>
+  <button class="menu m3" data-go="garden"><span>🪴</span><div><b>สวนของฉัน</b><small>สะสมดอกไม้ ตกแต่งสวน</small></div></button>
+  <button class="btn w" data-go="start">🏠 กลับหน้าหลัก</button>
+</section>
+
+<section class="scr" id="match">
+  <h2>จับคู่ภาพ</h2>
+  <p class="sub">หาภาพที่เหมือนกันให้ครบ</p>
+  <p class="encourage" id="matchEncourage" aria-live="polite">เลือกภาพที่คุ้นเคยได้เลย</p>
+  <div class="level-row" aria-label="เลือกระดับความยาก">
+    <button class="level-btn on" type="button" data-level="4">ง่าย<br>4 ใบ</button>
+    <button class="level-btn" type="button" data-level="6">ปานกลาง<br>6 ใบ</button>
+    <button class="level-btn" type="button" data-level="8">ท้าทาย<br>8 ใบ</button>
+  </div>
+  <div class="bar"><span class="chip">🌸 พบ <span id="mc">0</span>/<span id="mp">2</span></span><button class="timer-btn" id="timerToggle" type="button">ไม่จับเวลา</button></div>
+  <div class="grid" id="mg"></div>
+  <div class="row"><button class="btn w" data-go="menu">← กลับ</button><button class="btn" id="mh">💡 คำใบ้<span class="badge" id="mhn">3</span></button></div>
+  <div class="ov" id="mo"><div class="big-f">⏰</div><h2>หมดเวลาแล้ว ไม่เป็นไรนะ</h2><button class="btn" data-go="match">เล่นอีกครั้ง</button><button class="btn w" data-go="menu">← กลับ</button></div>
+</section>
+
+<section class="scr" id="spot">
+  <h2>จับผิดภาพ</h2>
+  <p class="sub">ดูให้ดี แล้วหาจุดที่แตกต่างกัน</p>
+  <p class="encourage" id="spotEncourage" aria-live="polite">ส่องช้า ๆ แล้วค่อยเลือก</p>
+  <div class="bar"><span class="chip">พบ <span id="sn">0</span>/3</span></div>
+  <div class="sc" id="sa"></div>
+  <div class="sc" id="sb"></div>
+  <div class="row"><button class="btn w" data-go="menu">← กลับ</button><button class="btn" id="sh">💡 ขอคำใบ้<span class="badge" id="shn">3</span></button></div>
+</section>
+
+<section class="scr" id="win">
+  <div class="sun" style="font-size:100px">😊</div>
+  <h1 style="font-size:40px">เก่งมาก!</h1>
+  <p id="winStatus">คุณได้รับดอกไม้แห่งรอยยิ้ม</p>
+  <div class="box"><span id="wf">🌻</span> <small style="font-size:22px">x1</small></div>
+  <div class="row"><button class="btn" data-go="menu">↻ เล่นอีกเกม</button><button class="btn p" data-go="garden">🪴 ดูสวนของฉัน</button></div>
+  <button class="btn w" data-go="start">🏠 กลับหน้าหลัก</button>
+</section>
+
+<section class="scr" id="garden">
+  <h2 id="gardenTitle">สวนของฉัน</h2>
+  <input class="garden-name" id="gardenName" maxlength="24" aria-label="ชื่อสวน" placeholder="ตั้งชื่อสวนของคุณ">
+  <div class="bar"><span class="chip">🌼 <span id="gn">0</span> ดอก</span></div>
+  <div class="garden garden-wrap" id="gd"></div>
+  <div class="row"><button class="btn" data-go="menu">▶ เล่นอีกเกม</button><button class="btn p" data-go="start">⏸ พักก่อน</button></div>
+</section>
+
 </div>
-
+<div class="auto-hint" id="autoHint" aria-live="polite"></div>
 <script>
-  const state = { flowers: Number(localStorage.getItem('smileFlowers') || 0), music: false };
-  const $ = id => document.getElementById(id);
-  let audioContext = null, musicTimer = null;
+const $=s=>document.querySelector(s),FL=['🌻','🌷','🌸','🌼','🌺','🪻','🌹'];
+let T,H,garden=[],matchCards=4,timerEnabled=false,fontLevel=1,waitMode=0,sessionRounds=0,soundEnabled=true,audioContext=null;
+try{garden=JSON.parse(localStorage.getItem('wwg')||'[]')}catch(e){}
+const save=()=>{try{localStorage.setItem('wwg',JSON.stringify(garden))}catch(e){}};
+const shuf=a=>[...a].sort(()=>Math.random()-.5);
+const inits={match,spot,win,garden:drawGarden};
+function go(id){clearInterval(T);clearTimeout(H);document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id==id));inits[id]&&inits[id]()}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
 
-  function switchScreen(name) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    const target = $('screen-' + name);
-    if (target) target.classList.add('active');
-    document.querySelectorAll('.bnav-btn').forEach(b => b.classList.toggle('active', b.dataset.screen === name));
-    if (name === 'garden') renderGarden();
-    if (name === 'home') renderHomeFlowers();
-    $('screen-' + name)?.scrollIntoView({block:'nearest'});
+function ensureAudio(){
+  if(!audioContext){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(AC)audioContext=new AC();
   }
+  if(audioContext&&audioContext.state==='suspended')audioContext.resume();
+}
+function tone(freq=880,duration=.12,delay=0){
+  if(!soundEnabled||!audioContext)return;
+  const osc=audioContext.createOscillator(),gain=audioContext.createGain();
+  osc.type='sine';osc.frequency.value=freq;gain.gain.value=.08;
+  osc.connect(gain);gain.connect(audioContext.destination);
+  const start=audioContext.currentTime+delay;
+  osc.start(start);gain.gain.exponentialRampToValueAtTime(.001,start+duration);osc.stop(start+duration);
+}
+function ding(){ensureAudio();tone(880,.12);tone(1175,.16,.13)}
+function clap(){ensureAudio();[0,.09,.18].forEach(d=>tone(520+d*300,.07,d))}
+function speak(text){
+  if(!soundEnabled||!('speechSynthesis' in window))return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='th-TH';u.rate=.82;u.pitch=1.08;u.volume=.8;
+  const thai=speechSynthesis.getVoices().find(v=>/^th/i.test(v.lang));
+  if(thai)u.voice=thai;
+  speechSynthesis.speak(u);
+}
+function cheer(text){
+  $('#autoHint').textContent=text;
+  $('#autoHint').classList.add('on');
+  clearTimeout(H);H=setTimeout(()=>$('#autoHint').classList.remove('on'),2800);
+  speak(text);
+}
 
-  function addFlowers(amount = 1) {
-    state.flowers += amount;
-    localStorage.setItem('smileFlowers', String(state.flowers));
-    updateFlowerCount();
-  }
-  function updateFlowerCount() {
-    $('topFlowerCount').textContent = state.flowers;
-    $('gardenFlowerCount').textContent = state.flowers;
-    $('gardenRank').textContent = state.flowers >= 20 ? 'สวนเบ่งบาน' : state.flowers >= 8 ? 'สวนสดใส' : 'สวนเริ่มต้น';
-  }
-  function renderHomeFlowers() {
-    const strip = $('homeFlowerStrip');
-    strip.innerHTML = '';
-    const count = Math.min(state.flowers, 12);
-    for (let i=0;i<count;i++) {
-      const span = document.createElement('span'); span.textContent = ['✿','❀','🌼'][i%3]; span.style.fontSize='20px'; strip.appendChild(span);
-    }
-    if (!count) strip.textContent = 'ดอกไม้ดอกแรกกำลังรอคุณอยู่';
-  }
-  function renderGarden() {
-    updateFlowerCount();
-    const row = $('plantedFlowers'); row.innerHTML = '';
-    const count = Math.min(state.flowers, 30);
-    for (let i=0;i<count;i++) {
-      const b = document.createElement('button'); b.className='gflower-btn'; b.type='button'; b.title='ดอกไม้ในสวน';
-      b.textContent = ['🌷','🌼','🌸','🌻','🌺'][i%5]; b.style.fontSize = (25 + (i%3)*5)+'px'; row.appendChild(b);
-    }
-    const pct = Math.min(100, state.flowers/30*100);
-    $('gardenProgress').style.width = pct+'%';
-    $('gardenProgressText').textContent = state.flowers >= 30 ? 'สวนของคุณเบ่งบานเต็มที่แล้ว' : `อีก ${30-state.flowers} ดอก สวนก็จะเบ่งบานเต็มที่`;
-    $('gardenToast').textContent = state.flowers ? 'สวนของคุณสดใสขึ้นทุกวัน' : 'เริ่มสะสมดอกไม้จากการเล่นเกม';
-  }
-  function showModal(title, message, badge='🌷', action=null) {
-    $('modalTitle').textContent=title; $('modalText').textContent=message; $('modalBadge').textContent=badge;
-    $('modalPrimary').onclick = () => { closeModal(); if (action) action(); };
-    $('resultModal').classList.remove('hidden');
-  }
-  function closeModal(){ $('resultModal').classList.add('hidden'); }
+$('#fontControl').onclick=()=>{
+  fontLevel=fontLevel%3+1;
+  $('#app').dataset.font=fontLevel;
+  $('#fontControl').textContent=['A','A+','A++'][fontLevel-1];
+};
+$('#soundControl').onclick=()=>{
+  soundEnabled=!soundEnabled;
+  $('#soundControl').textContent=soundEnabled?'🔊':'🔇';
+  $('#soundControl').setAttribute('aria-label',soundEnabled?'ปิดเสียง':'เปิดเสียง');
+  if(soundEnabled){ensureAudio();ding();speak('เปิดเสียงแล้วนะ')}
+};
 
-  // เสียงประกอบแบบเบา ๆ สร้างด้วย Web Audio ไม่ต้องใช้ไฟล์เสียงภายนอก
-  function playTone(freq=660, duration=.12) {
-    if (!state.music) return;
-    try {
-      audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
-      const osc=audioContext.createOscillator(), gain=audioContext.createGain();
-      osc.frequency.value=freq; osc.type='sine'; gain.gain.setValueAtTime(.035,audioContext.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+duration);
-      osc.connect(gain); gain.connect(audioContext.destination); osc.start(); osc.stop(audioContext.currentTime+duration);
-    } catch(e) {}
-  }
-  $('musicButton').addEventListener('click', () => {
-    state.music=!state.music;
-    $('musicButton').classList.toggle('playing',state.music);
-    $('musicText').textContent=state.music?'ปิดเสียง':'เปิดเสียง';
-    $('musicIcon').textContent=state.music?'♫':'♪';
-    if(state.music) playTone(523,.2);
-  });
+document.querySelectorAll('[data-wait]').forEach(btn=>btn.onclick=()=>{
+  waitMode=Number(btn.dataset.wait);
+  sessionRounds=0;
+  document.querySelectorAll('[data-wait]').forEach(b=>b.classList.toggle('on',b===btn));
+  const target=waitMode==3?2:waitMode==10?5:0;
+  $('#sessionHint').textContent=target?'วันนี้ขอเล่นให้ครบ '+target+' รอบ':'เล่นได้ตามอารมณ์ ไม่ต้องรีบ';
+  $('#sessionHint').dataset.target=target;
+});
 
-  // เกมจับคู่ภาพ
-  const matchSymbols=['🌷','🌼','🌻','🌸','🍀','🦋'];
-  let matchDeck=[], firstCard=null, lockMatch=false, matched=0, moves=0;
-  function startGame(game) {
-    if (game==='match') { switchScreen('match'); resetMatch(); }
-    if (game==='spot') { switchScreen('spot'); resetSpot(); }
-    if (game==='catch') { switchScreen('catch'); stopCatch(); $('catchMessage').textContent='กดเริ่มเกม แล้วแตะดอกไม้ที่ปรากฏ'; }
-  }
-  function resetMatch() {
-    matchDeck=[...matchSymbols,...matchSymbols].map((v,i)=>({v,id:i})).sort(()=>Math.random()-.5);
-    firstCard=null; lockMatch=false; matched=0; moves=0;
-    $('matchPairs').textContent='0/6'; $('matchMoves').textContent='0'; $('matchMessage').textContent='ค่อย ๆ เล่น ไม่ต้องรีบนะ';
-    const grid=$('memoryGrid'); grid.innerHTML='';
-    matchDeck.forEach(card=>{
-      const b=document.createElement('button'); b.className='mem-card'; b.type='button'; b.dataset.id=card.id; b.setAttribute('aria-label','เปิดการ์ด');
-      b.innerHTML=`<span class="mem-inner"><span class="mem-front">✿</span><span class="mem-back"><strong style="font-size:1.8rem">${card.v}</strong><span>ภาพดอกไม้</span></span></span>`;
-      b.addEventListener('click',()=>flipCard(b,card)); grid.appendChild(b);
-    });
-  }
-  function flipCard(button,card) {
-    if(lockMatch || button.classList.contains('flipped') || button.classList.contains('matched')) return;
-    button.classList.add('flipped'); playTone(620);
-    if(!firstCard){firstCard={button,card};return;}
-    moves++; $('matchMoves').textContent=moves;
-    if(firstCard.card.v===card.v){
-      firstCard.button.classList.add('matched'); button.classList.add('matched'); matched++;
-      $('matchPairs').textContent=matched+'/6'; firstCard=null; playTone(784);
-      if(matched===6){addFlowers(3); $('matchMessage').textContent='ยอดเยี่ยม! พบครบทุกคู่แล้ว'; showModal('จับคู่สำเร็จ!','คุณได้รับดอกไม้ 3 ดอก ไปตกแต่งสวนกันเลย','🌸',()=>switchScreen('garden'));}
-    } else {
-      lockMatch=true; const old=firstCard.button; firstCard=null;
-      $('matchMessage').textContent='ยังไม่ใช่คู่เดียวกัน ลองอีกครั้งนะ';
-      setTimeout(()=>{old.classList.remove('flipped');button.classList.remove('flipped');lockMatch=false;},850);
-    }
-  }
+document.querySelectorAll('[data-level]').forEach(btn=>btn.onclick=()=>{
+  matchCards=Number(btn.dataset.level);
+  document.querySelectorAll('[data-level]').forEach(b=>b.classList.toggle('on',b===btn));
+  match();
+});
+$('#timerToggle').onclick=()=>{
+  timerEnabled=!timerEnabled;
+  $('#timerToggle').textContent=timerEnabled?'โหมดท้าทาย · 01:00':'ไม่จับเวลา';
+  match();
+};
 
-  // เกมจับผิดภาพ: แตะตำแหน่งที่ต่างกันในภาพ
-  let foundSpots=new Set();
-  function resetSpot(){
-    foundSpots=new Set(); $('spotCount').textContent='0/3'; $('spotStatus').textContent='กำลังสังเกต';
-    $('spotMessage').textContent='ลองสังเกตดวงอาทิตย์ ดอกไม้ และน้องหมา';
-    ['spotRing1','spotRing2','spotRing3','spotRing1b','spotRing2b','spotRing3b'].forEach(id=>$(id).classList.remove('found'));
-  }
-  document.querySelectorAll('#screen-spot .spot-panel').forEach(panel=>{
-    panel.addEventListener('click',event=>{
-      const rect=panel.getBoundingClientRect(), x=(event.clientX-rect.left)/rect.width*160, y=(event.clientY-rect.top-24)/(rect.height-24)*160;
-      const spots=[{x:128,y:25},{x:37,y:105},{x:124,y:100}];
-      let nearest=-1,dist=999;
-      spots.forEach((p,i)=>{const d=Math.hypot(x-p.x,y-p.y);if(d<dist){dist=d;nearest=i;}});
-      if(dist<25 && !foundSpots.has(nearest)){
-        foundSpots.add(nearest); $(`spotRing${nearest+1}`).classList.add('found'); $(`spotRing${nearest+1}b`).classList.add('found');
-        $('spotCount').textContent=foundSpots.size+'/3'; $('spotMessage').textContent='เจอแล้ว เก่งมาก! ลองหาจุดต่อไป';
-        playTone(740);
-        if(foundSpots.size===3){$('spotStatus').textContent='ครบแล้ว';$('spotMessage').textContent='คุณสังเกตได้ครบทั้ง 3 จุดแล้ว';addFlowers(2);showModal('ตาไวมาก!','คุณได้รับดอกไม้ 2 ดอก','🌼',()=>switchScreen('garden'));}
-      } else if(dist>=25) $('spotMessage').textContent='ลองแตะบริเวณที่คิดว่าต่างกันอีกครั้งนะ';
-    });
-  });
-
-  // เกมรับดอกไม้
-  let catchScore=0, catchRemaining=30, catchInterval=null, spawnInterval=null, basketX=50, catchRunning=false;
-  function moveBasket(dir){basketX=Math.max(10,Math.min(90,basketX+dir*10));$('basketBox').style.left=basketX+'%';}
-  function spawnFlower(){
-    if(!catchRunning)return;
-    const area=$('catcherArea'), item=document.createElement('button');
-    item.className='fall-item'; item.type='button'; item.textContent=['🌸','🌼','🌷','🌻'][Math.floor(Math.random()*4)];
-    item.style.left=(8+Math.random()*84)+'%'; item.style.top=(12+Math.random()*60)+'%';
-    item.setAttribute('aria-label','เก็บดอกไม้'); item.addEventListener('click',()=>{if(!catchRunning)return;catchScore++;$('catchScore').textContent=catchScore;item.remove();playTone(800);});
-    area.appendChild(item); setTimeout(()=>item.remove(),1800);
-  }
-  function stopCatch(){
-    catchRunning=false; clearInterval(catchInterval);clearInterval(spawnInterval);
-    $('catcherArea').querySelectorAll('.fall-item').forEach(x=>x.remove());
-  }
-  function startCatch(){
-    stopCatch();catchScore=0;catchRemaining=30;catchRunning=true;basketX=50;
-    $('basketBox').style.left='50%';$('catchScore').textContent='0';$('catchTime').textContent='30';
-    $('catchMessage').textContent='แตะดอกไม้เพื่อเก็บคะแนน';$('catchStart').textContent='กำลังเล่น...';
-    spawnFlower();spawnInterval=setInterval(spawnFlower,850);
-    catchInterval=setInterval(()=>{
-      catchRemaining--; $('catchTime').textContent=catchRemaining;
-      if(catchRemaining<=0){
-        stopCatch();$('catchStart').textContent='เล่นอีกครั้ง';$('catchMessage').textContent=`คุณเก็บดอกไม้ได้ ${catchScore} ดอก`;
-        const reward=catchScore>=10?3:catchScore>=5?2:1;addFlowers(reward);
-        showModal('หมดเวลาแล้ว!','คุณได้รับดอกไม้เพิ่ม '+reward+' ดอก ขอบคุณที่แวะมาเล่นนะ','🌷',()=>switchScreen('garden'));
+function match(){
+  clearInterval(T);
+  const pairCount=matchCards/2;
+  const a=shuf(['🪷','🌺','🥭','🍌','🍍','🌼']).slice(0,pairCount),g=$('#mg');
+  let open=[],found=0,lock=false,t=60,hints=3,mistakes=0,idleTimer;
+  clearTimeout(H);$('#autoHint').classList.remove('on');
+  $('#matchEncourage').textContent='เลือกภาพที่คุ้นเคยได้เลย';
+  g.innerHTML='';$('#mo').classList.remove('on');$('#mc').textContent=0;$('#mp').textContent=pairCount;$('#mhn').textContent=3;
+  document.querySelectorAll('[data-level]').forEach(b=>b.classList.toggle('on',Number(b.dataset.level)==matchCards));
+  $('#timerToggle').textContent=timerEnabled?'โหมดท้าทาย · 01:00':'ไม่จับเวลา';
+  shuf([...a,...a]).forEach(em=>{
+    const c=document.createElement('button');c.className='card';c.innerHTML='<span>'+em+'</span>';
+    c.onclick=()=>{
+      if(lock||c.classList.contains('open')||c.classList.contains('done'))return;
+      clearTimeout(idleTimer);
+      c.classList.add('open');open.push(c);
+      if(open.length<2)return;
+      lock=true;const[x,y]=open;
+      if(x.textContent==y.textContent){
+        x.classList.replace('open','done');y.classList.replace('open','done');open=[];lock=false;
+        $('#mc').textContent=++found;
+        ding();mistakes=0;
+        $('#matchEncourage').textContent='เก่งมาก เลือกได้ด้วยใจ';
+        if(found==pairCount){clearInterval(T);clap();speak('เก่งมากเลย!');setTimeout(()=>go('win'),700)}
+        else speak('เก่งมาก');
+      }else {
+        mistakes++;
+        $('#matchEncourage').textContent='ลองอีกทีนะ ดูภาพให้ชัด ๆ';
+        if(mistakes>=2){cheer('ลองมองภาพซ้ำกันดูนะ มีภาพที่เหมือนกันอยู่');mistakes=0}
+        else speak('ลองอีกทีนะ');
+        setTimeout(()=>{x.classList.remove('open');y.classList.remove('open');open=[];lock=false},800);
       }
-    },1000);
+      idleTimer=setTimeout(()=>autoHintMatch(g),12000);
+    };
+    g.append(c);
+  });
+  if(timerEnabled){
+    T=setInterval(()=>{t--;$('#timerToggle').textContent='โหมดท้าทาย · '+(t<60?'00:':'')+String(t).padStart(2,'0');if(t<=0){clearInterval(T);$('#timerToggle').textContent='หมดเวลา';$('#mo').classList.add('on')}},1000);
   }
-  $('catcherArea').addEventListener('pointermove',e=>{
-    if(!catchRunning)return;const r=$('catcherArea').getBoundingClientRect();basketX=Math.max(8,Math.min(92,(e.clientX-r.left)/r.width*100));$('basketBox').style.left=basketX+'%';
-  });
-  $('catcherArea').addEventListener('click',e=>{
-    if(!catchRunning)return;const r=$('catcherArea').getBoundingClientRect();basketX=Math.max(8,Math.min(92,(e.clientX-r.left)/r.width*100));$('basketBox').style.left=basketX+'%';
-  });
+  $('#mh').onclick=()=>{
+    if(hints<1||lock)return;
+    $('#mhn').textContent=--hints;lock=true;
+    const hid=[...g.children].filter(c=>!c.classList.contains('open')&&!c.classList.contains('done'));
+    hid.forEach(c=>c.classList.add('peek'));
+    setTimeout(()=>{hid.forEach(c=>c.classList.remove('peek'));lock=false},1200);
+  };
+  idleTimer=setTimeout(()=>autoHintMatch(g),12000);
+}
 
-  updateFlowerCount();renderHomeFlowers();
-  window.addEventListener('beforeunload',stopCatch);
+function autoHintMatch(g){
+  const cards=[...g.children].filter(c=>!c.classList.contains('done'));
+  if(cards.length<2)return;
+  const em=cards.find(c=>cards.filter(x=>x.textContent==c.textContent).length==2)?.textContent;
+  if(!em)return;
+  const pair=cards.filter(c=>c.textContent==em);
+  pair.forEach(c=>c.classList.add('peek'));
+  cheer('คำใบ้: ภาพ '+em+' นี้อยู่ด้วยกัน');
+  setTimeout(()=>pair.forEach(c=>c.classList.remove('peek')),1600);
+}
+
+const A=[['🌳',12,40,46],['🏡',50,36,50],['🌳',88,42,42],['🌸',20,80,26],['🌼',40,84,26],['🌷',62,82,26],['🌻',82,80,28],['🦋',30,18,24],['☁️',72,12,32]];
+const B=A.filter(i=>i[0]!='🦋').map(i=>i[0]=='🌷'?['🌺',i[1],i[2],i[3]]:i).concat([['🐝',75,60,22]]);
+const D=[[62,82],[30,18],[75,60]];
+const draw=(el,items)=>el.innerHTML='<div class="fence"></div>'+items.map(i=>`<i style="left:${i[1]}%;top:${i[2]}%;font-size:${i[3]}px">${i[0]}</i>`).join('');
+const ring=(d,c='')=>[$('#sa'),$('#sb')].map(el=>{const r=document.createElement('b');r.className='ring '+c;r.style.left=d[0]+'%';r.style.top=d[1]+'%';el.append(r);return r});
+function spot(){
+  const f=[];let hints=3,mistakes=0,idleTimer;
+  clearTimeout(H);$('#autoHint').classList.remove('on');
+  draw($('#sa'),A);draw($('#sb'),B);$('#sn').textContent=0;$('#shn').textContent=3;
+  [$('#sa'),$('#sb')].forEach(el=>el.onclick=e=>{
+    clearTimeout(idleTimer);
+    const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;
+    const k=D.findIndex((d,i)=>!f.includes(i)&&Math.abs(x-d[0])<16&&Math.abs(y-d[1])<24);
+    if(k<0){
+      mistakes++;
+      el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');
+      $('#spotEncourage').textContent='ลองอีกทีนะ ส่องอย่างช้า ๆ';
+      if(mistakes>=2){cheer('ยังไม่ต้องรีบ ลองดูริมทุ่งหรือจุดสีต่างกัน');mistakes=0}
+      else speak('ลองอีกทีนะ');
+      idleTimer=setTimeout(()=>autoHintSpot(f),10000);
+      return;
+    }
+    f.push(k);ring(D[k]);$('#sn').textContent=f.length;ding();
+    $('#spotEncourage').textContent='สังเกตเก่งมาก!';
+    speak('เก่งมาก');
+    if(f.length==3){clap();speak('เก่งมากเลย!');setTimeout(()=>go('win'),800)}
+    else idleTimer=setTimeout(()=>autoHintSpot(f),12000);
+  });
+  $('#sh').onclick=()=>{
+    const k=D.findIndex((d,i)=>!f.includes(i));
+    if(hints<1||k<0)return;
+    $('#shn').textContent=--hints;
+    const rs=ring(D[k],'h');setTimeout(()=>rs.forEach(r=>r.remove()),1600);
+  };
+}
+
+function autoHintSpot(f){
+  const k=D.findIndex((d,i)=>!f.includes(i));
+  if(k<0)return;
+  ring(D[k],'h');
+  cheer('คำใบ้: ลองดูบริเวณที่วงแสดงอยู่');
+  setTimeout(()=>[$('#sa'),$('#sb')].forEach(el=>el.querySelectorAll('.ring.h').forEach(r=>r.remove())),1600);
+}
+
+function win(){
+  const fl=FL[Math.floor(Math.random()*FL.length)];
+  $('#wf').textContent=fl;garden.push(fl);save();
+  clap();
+  speak('เก่งมากเลย! วันนี้คุณเก็บดอกไม้ได้หนึ่งดอก');
+  sessionRounds++;
+  const target=Number($('#sessionHint').dataset.target||0);
+  $('#winStatus').textContent=target
+    ?(sessionRounds>=target?'ครบรอบเวลารอแล้ว ทุกนิดมีความสุข 😊': 'เล่นครบ '+sessionRounds+'/'+target+' รอบสวย ๆ')
+    :'คุณได้รับดอกไม้แห่งรอยยิ้ม';
+  for(let i=0;i<14;i++){const s=document.createElement('span');s.className='fall';s.textContent=FL[i%FL.length];s.style.left=Math.random()*95+'%';s.style.animationDuration=3+Math.random()*3+'s';$('#win').append(s);setTimeout(()=>s.remove(),6500)}
+}
+function drawGarden(){
+  let gardenName='';
+  try{gardenName=localStorage.getItem('wwGardenName')||''}catch(e){}
+  $('#gardenName').value=gardenName;
+  $('#gardenTitle').textContent=gardenName?gardenName+' 🌿':'สวนของฉัน';
+  $('#gn').textContent=garden.length;
+  $('#gd').classList.remove('morning','afternoon','evening');
+  const hour=new Date().getHours();
+  const phase=hour<12?'morning':hour<18?'afternoon':'evening';
+  $('#gd').classList.add(phase);
+  const flowers=garden.length?garden.map(f=>`<span>${f}</span>`).join(''):'<p style="width:100%;align-self:center">ยังไม่มีดอกไม้ เล่นเกมเพื่อสะสมดอกแรกกันเถอะ 🌱</p>';
+  const butterflies=Math.floor(garden.length/5);
+  const visitors=Array.from({length:butterflies},(_,i)=>`<span class="butterfly" style="left:${8+i*18}%;top:${18+(i%2)*22}%">🦋</span>`).join('');
+  $('#gd').innerHTML=flowers+visitors;
+}
+$('#gardenName').oninput=e=>{
+  const name=e.target.value.trim();
+  $('#gardenTitle').textContent=name?name+' 🌿':'สวนของฉัน';
+  try{localStorage.setItem('wwGardenName',name)}catch(e){}
+};
 </script>
 </body>
 </html>
