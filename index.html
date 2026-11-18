@@ -64,10 +64,6 @@ p{margin:0;font-size:16px}
 .garden{width:100%;flex:1;min-height:150px;border-radius:22px;background:linear-gradient(#dff3ff 0,#e9f7e4 35%,#8fd072 36%);border:4px solid #fff;display:flex;flex-wrap:wrap;align-content:flex-end;justify-content:center;gap:2px;padding:10px;overflow:auto;font-size:38px}
 .garden span{animation:pop .5s}
 .font-control{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;z-index:50;min-width:68px;min-height:64px;border:3px solid #fff;border-radius:32px;background:#fff;color:var(--gd);box-shadow:0 4px 12px rgba(45,74,58,.18);font:700 18px 'Mali',sans-serif;cursor:pointer}
-.sound-control{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);right:86px;z-index:50;width:64px;height:64px;border:3px solid #fff;border-radius:32px;background:#fff;box-shadow:0 4px 12px rgba(45,74,58,.18);font-size:28px;cursor:pointer}
-.encourage{min-height:24px;margin:-4px 0 2px;font-size:17px;font-weight:700;color:#2f7a4a}
-.auto-hint{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);z-index:12;width:min(330px,86%);min-height:64px;display:none;align-items:center;justify-content:center;border:3px solid #fff;border-radius:22px;background:#fff1c4;color:#2f5d43;box-shadow:0 5px 14px rgba(45,74,58,.18);font:700 17px 'Mali',sans-serif;padding:10px 14px}
-.auto-hint.on{display:flex}
 #app[data-font="2"] h1{font-size:48px}
 #app[data-font="2"] h2{font-size:30px}
 #app[data-font="2"] p,#app[data-font="2"] .sub,#app[data-font="2"] .menu small{font-size:18px}
@@ -120,7 +116,6 @@ p{margin:0;font-size:16px}
 <body>
 <div id="app">
 <button class="font-control" id="fontControl" type="button" aria-label="ปรับขนาดตัวอักษร">A</button>
-<button class="sound-control" id="soundControl" type="button" aria-label="เปิดหรือปิดเสียง">🔊</button>
 
 <section class="scr on cover-start" id="start">
   <h1>แวะเล่น<em>แวะยิ้ม</em></h1>
@@ -148,7 +143,6 @@ p{margin:0;font-size:16px}
 <section class="scr" id="match">
   <h2>จับคู่ภาพ</h2>
   <p class="sub">หาภาพที่เหมือนกันให้ครบ</p>
-  <p class="encourage" id="matchEncourage" aria-live="polite">เลือกภาพที่คุ้นเคยได้เลย</p>
   <div class="level-row" aria-label="เลือกระดับความยาก">
     <button class="level-btn on" type="button" data-level="4">ง่าย<br>4 ใบ</button>
     <button class="level-btn" type="button" data-level="6">ปานกลาง<br>6 ใบ</button>
@@ -163,7 +157,6 @@ p{margin:0;font-size:16px}
 <section class="scr" id="spot">
   <h2>จับผิดภาพ</h2>
   <p class="sub">ดูให้ดี แล้วหาจุดที่แตกต่างกัน</p>
-  <p class="encourage" id="spotEncourage" aria-live="polite">ส่องช้า ๆ แล้วค่อยเลือก</p>
   <div class="bar"><span class="chip">พบ <span id="sn">0</span>/3</span></div>
   <div class="sc" id="sa"></div>
   <div class="sc" id="sb"></div>
@@ -188,60 +181,20 @@ p{margin:0;font-size:16px}
 </section>
 
 </div>
-<div class="auto-hint" id="autoHint" aria-live="polite"></div>
 <script>
 const $=s=>document.querySelector(s),FL=['🌻','🌷','🌸','🌼','🌺','🪻','🌹'];
-let T,H,garden=[],matchCards=4,timerEnabled=false,fontLevel=1,waitMode=0,sessionRounds=0,soundEnabled=true,audioContext=null;
+let T,garden=[],matchCards=4,timerEnabled=false,fontLevel=1,waitMode=0,sessionRounds=0;
 try{garden=JSON.parse(localStorage.getItem('wwg')||'[]')}catch(e){}
 const save=()=>{try{localStorage.setItem('wwg',JSON.stringify(garden))}catch(e){}};
 const shuf=a=>[...a].sort(()=>Math.random()-.5);
 const inits={match,spot,win,garden:drawGarden};
-function go(id){clearInterval(T);clearTimeout(H);document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id==id));inits[id]&&inits[id]()}
+function go(id){clearInterval(T);document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id==id));inits[id]&&inits[id]()}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
-
-function ensureAudio(){
-  if(!audioContext){
-    const AC=window.AudioContext||window.webkitAudioContext;
-    if(AC)audioContext=new AC();
-  }
-  if(audioContext&&audioContext.state==='suspended')audioContext.resume();
-}
-function tone(freq=880,duration=.12,delay=0){
-  if(!soundEnabled||!audioContext)return;
-  const osc=audioContext.createOscillator(),gain=audioContext.createGain();
-  osc.type='sine';osc.frequency.value=freq;gain.gain.value=.08;
-  osc.connect(gain);gain.connect(audioContext.destination);
-  const start=audioContext.currentTime+delay;
-  osc.start(start);gain.gain.exponentialRampToValueAtTime(.001,start+duration);osc.stop(start+duration);
-}
-function ding(){ensureAudio();tone(880,.12);tone(1175,.16,.13)}
-function clap(){ensureAudio();[0,.09,.18].forEach(d=>tone(520+d*300,.07,d))}
-function speak(text){
-  if(!soundEnabled||!('speechSynthesis' in window))return;
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang='th-TH';u.rate=.82;u.pitch=1.08;u.volume=.8;
-  const thai=speechSynthesis.getVoices().find(v=>/^th/i.test(v.lang));
-  if(thai)u.voice=thai;
-  speechSynthesis.speak(u);
-}
-function cheer(text){
-  $('#autoHint').textContent=text;
-  $('#autoHint').classList.add('on');
-  clearTimeout(H);H=setTimeout(()=>$('#autoHint').classList.remove('on'),2800);
-  speak(text);
-}
 
 $('#fontControl').onclick=()=>{
   fontLevel=fontLevel%3+1;
   $('#app').dataset.font=fontLevel;
   $('#fontControl').textContent=['A','A+','A++'][fontLevel-1];
-};
-$('#soundControl').onclick=()=>{
-  soundEnabled=!soundEnabled;
-  $('#soundControl').textContent=soundEnabled?'🔊':'🔇';
-  $('#soundControl').setAttribute('aria-label',soundEnabled?'ปิดเสียง':'เปิดเสียง');
-  if(soundEnabled){ensureAudio();ding();speak('เปิดเสียงแล้วนะ')}
 };
 
 document.querySelectorAll('[data-wait]').forEach(btn=>btn.onclick=()=>{
@@ -267,10 +220,8 @@ $('#timerToggle').onclick=()=>{
 function match(){
   clearInterval(T);
   const pairCount=matchCards/2;
-  const a=shuf(['🪷','🌺','🥭','🍌','🍍','🌼']).slice(0,pairCount),g=$('#mg');
-  let open=[],found=0,lock=false,t=60,hints=3,mistakes=0,idleTimer;
-  clearTimeout(H);$('#autoHint').classList.remove('on');
-  $('#matchEncourage').textContent='เลือกภาพที่คุ้นเคยได้เลย';
+  const a=shuf(['🌸','🦋','🌻','🐞','🍃','🌷']).slice(0,pairCount),g=$('#mg');
+  let open=[],found=0,lock=false,t=60,hints=3;
   g.innerHTML='';$('#mo').classList.remove('on');$('#mc').textContent=0;$('#mp').textContent=pairCount;$('#mhn').textContent=3;
   document.querySelectorAll('[data-level]').forEach(b=>b.classList.toggle('on',Number(b.dataset.level)==matchCards));
   $('#timerToggle').textContent=timerEnabled?'โหมดท้าทาย · 01:00':'ไม่จับเวลา';
@@ -278,25 +229,14 @@ function match(){
     const c=document.createElement('button');c.className='card';c.innerHTML='<span>'+em+'</span>';
     c.onclick=()=>{
       if(lock||c.classList.contains('open')||c.classList.contains('done'))return;
-      clearTimeout(idleTimer);
       c.classList.add('open');open.push(c);
       if(open.length<2)return;
       lock=true;const[x,y]=open;
       if(x.textContent==y.textContent){
         x.classList.replace('open','done');y.classList.replace('open','done');open=[];lock=false;
         $('#mc').textContent=++found;
-        ding();mistakes=0;
-        $('#matchEncourage').textContent='เก่งมาก เลือกได้ด้วยใจ';
-        if(found==pairCount){clearInterval(T);clap();speak('เก่งมากเลย!');setTimeout(()=>go('win'),700)}
-        else speak('เก่งมาก');
-      }else {
-        mistakes++;
-        $('#matchEncourage').textContent='ลองอีกทีนะ ดูภาพให้ชัด ๆ';
-        if(mistakes>=2){cheer('ลองมองภาพซ้ำกันดูนะ มีภาพที่เหมือนกันอยู่');mistakes=0}
-        else speak('ลองอีกทีนะ');
-        setTimeout(()=>{x.classList.remove('open');y.classList.remove('open');open=[];lock=false},800);
-      }
-      idleTimer=setTimeout(()=>autoHintMatch(g),12000);
+        if(found==pairCount){clearInterval(T);setTimeout(()=>go('win'),700)}
+      }else setTimeout(()=>{x.classList.remove('open');y.classList.remove('open');open=[];lock=false},800);
     };
     g.append(c);
   });
@@ -310,18 +250,6 @@ function match(){
     hid.forEach(c=>c.classList.add('peek'));
     setTimeout(()=>{hid.forEach(c=>c.classList.remove('peek'));lock=false},1200);
   };
-  idleTimer=setTimeout(()=>autoHintMatch(g),12000);
-}
-
-function autoHintMatch(g){
-  const cards=[...g.children].filter(c=>!c.classList.contains('done'));
-  if(cards.length<2)return;
-  const em=cards.find(c=>cards.filter(x=>x.textContent==c.textContent).length==2)?.textContent;
-  if(!em)return;
-  const pair=cards.filter(c=>c.textContent==em);
-  pair.forEach(c=>c.classList.add('peek'));
-  cheer('คำใบ้: ภาพ '+em+' นี้อยู่ด้วยกัน');
-  setTimeout(()=>pair.forEach(c=>c.classList.remove('peek')),1600);
 }
 
 const A=[['🌳',12,40,46],['🏡',50,36,50],['🌳',88,42,42],['🌸',20,80,26],['🌼',40,84,26],['🌷',62,82,26],['🌻',82,80,28],['🦋',30,18,24],['☁️',72,12,32]];
@@ -330,27 +258,14 @@ const D=[[62,82],[30,18],[75,60]];
 const draw=(el,items)=>el.innerHTML='<div class="fence"></div>'+items.map(i=>`<i style="left:${i[1]}%;top:${i[2]}%;font-size:${i[3]}px">${i[0]}</i>`).join('');
 const ring=(d,c='')=>[$('#sa'),$('#sb')].map(el=>{const r=document.createElement('b');r.className='ring '+c;r.style.left=d[0]+'%';r.style.top=d[1]+'%';el.append(r);return r});
 function spot(){
-  const f=[];let hints=3,mistakes=0,idleTimer;
-  clearTimeout(H);$('#autoHint').classList.remove('on');
+  const f=[];let hints=3;
   draw($('#sa'),A);draw($('#sb'),B);$('#sn').textContent=0;$('#shn').textContent=3;
   [$('#sa'),$('#sb')].forEach(el=>el.onclick=e=>{
-    clearTimeout(idleTimer);
     const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;
     const k=D.findIndex((d,i)=>!f.includes(i)&&Math.abs(x-d[0])<16&&Math.abs(y-d[1])<24);
-    if(k<0){
-      mistakes++;
-      el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');
-      $('#spotEncourage').textContent='ลองอีกทีนะ ส่องอย่างช้า ๆ';
-      if(mistakes>=2){cheer('ยังไม่ต้องรีบ ลองดูริมทุ่งหรือจุดสีต่างกัน');mistakes=0}
-      else speak('ลองอีกทีนะ');
-      idleTimer=setTimeout(()=>autoHintSpot(f),10000);
-      return;
-    }
-    f.push(k);ring(D[k]);$('#sn').textContent=f.length;ding();
-    $('#spotEncourage').textContent='สังเกตเก่งมาก!';
-    speak('เก่งมาก');
-    if(f.length==3){clap();speak('เก่งมากเลย!');setTimeout(()=>go('win'),800)}
-    else idleTimer=setTimeout(()=>autoHintSpot(f),12000);
+    if(k<0){el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');return}
+    f.push(k);ring(D[k]);$('#sn').textContent=f.length;
+    if(f.length==3)setTimeout(()=>go('win'),800);
   });
   $('#sh').onclick=()=>{
     const k=D.findIndex((d,i)=>!f.includes(i));
@@ -360,19 +275,9 @@ function spot(){
   };
 }
 
-function autoHintSpot(f){
-  const k=D.findIndex((d,i)=>!f.includes(i));
-  if(k<0)return;
-  ring(D[k],'h');
-  cheer('คำใบ้: ลองดูบริเวณที่วงแสดงอยู่');
-  setTimeout(()=>[$('#sa'),$('#sb')].forEach(el=>el.querySelectorAll('.ring.h').forEach(r=>r.remove())),1600);
-}
-
 function win(){
   const fl=FL[Math.floor(Math.random()*FL.length)];
   $('#wf').textContent=fl;garden.push(fl);save();
-  clap();
-  speak('เก่งมากเลย! วันนี้คุณเก็บดอกไม้ได้หนึ่งดอก');
   sessionRounds++;
   const target=Number($('#sessionHint').dataset.target||0);
   $('#winStatus').textContent=target
