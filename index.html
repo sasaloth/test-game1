@@ -118,7 +118,10 @@ p{margin:0;font-size:16px}
 @keyframes sway{50%{transform:rotate(5deg) translateY(-3px)}}
 @keyframes fly{25%{transform:translate(90px,-25px)}50%{transform:translate(170px,15px)}75%{transform:translate(60px,35px)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
-.sound-control{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);right:86px;z-index:50;width:64px;height:64px;border:3px solid #fff;border-radius:32px;background:#fff;font-size:28px;cursor:pointer}
+.sound-control{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);right:86px;z-index:50;min-width:76px;min-height:64px;border:3px solid #fff;border-radius:32px;background:#fff;color:var(--gd);font:700 15px 'Mali',sans-serif;cursor:pointer}
+.version-label{position:absolute;left:50%;bottom:5px;z-index:45;transform:translateX(-50%);padding:2px 9px;border-radius:12px;background:rgba(255,255,255,.78);color:#365744;font:500 10px system-ui,sans-serif;pointer-events:none}
+.sound-status{position:absolute;top:78px;right:10px;z-index:50;max-width:230px;padding:5px 9px;border-radius:12px;background:rgba(255,255,255,.94);color:#2f4d3c;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.sound-status:empty{display:none}
 .encourage{min-height:24px;margin:-4px 0 2px;font-size:17px;font-weight:700;color:#2f7a4a}
 .garden-tools{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;width:100%}
 .decorate-btn,.spot-level{min-height:64px;border:2px solid #a8dc92;border-radius:18px;background:#fff;color:#2f7a4a;font:700 16px 'Mali',sans-serif;padding:8px 14px;cursor:pointer}
@@ -150,8 +153,12 @@ p{margin:0;font-size:16px}
 <body>
 <div id="app">
 <button class="font-control" id="fontControl" type="button" aria-label="ปรับขนาดตัวอักษร">A</button>
-<button class="sound-control" id="soundControl" type="button" aria-label="เปิดเพลงและเสียง">🔇</button>
-<audio id="backgroundMusic" src="pripac-relaxed-gaming-vibes-323631.mp3" loop preload="none"></audio>
+<button class="sound-control" id="soundControl" type="button" aria-label="แตะเพื่อเปิดเพลงและเสียง" aria-pressed="false">🔇 เสียงปิด</button>
+<p class="sound-status" id="soundStatus" role="status" aria-live="polite"></p>
+<audio id="backgroundMusic" loop preload="metadata" playsinline webkit-playsinline>
+  <source src="pripac-relaxed-gaming-vibes-323631.mp3" type="audio/mpeg">
+</audio>
+<small class="version-label">อัปเดต v1.1</small>
 
 <section class="scr on cover-start" id="start">
   <h1>แวะเล่น<em>แวะยิ้ม</em></h1>
@@ -348,20 +355,29 @@ function speak(text,force){if((!soundEnabled&&!force)||!('speechSynthesis' in wi
 $('#soundControl').onclick=()=>{
   const music=$('#backgroundMusic');
   soundEnabled=!soundEnabled;
-  $('#soundControl').textContent=soundEnabled?'🔊':'🔇';
+  $('#soundControl').textContent=soundEnabled?'🔊 เสียงเปิด':'🔇 เสียงปิด';
+  $('#soundControl').setAttribute('aria-pressed',String(soundEnabled));
   $('#soundControl').setAttribute('aria-label',soundEnabled?'ปิดเพลงและเสียง':'เปิดเพลงและเสียง');
   if(soundEnabled){
-    music.volume=.12;
-    music.play().then(()=>ding()).catch(()=>{
-      soundEnabled=false;music.pause();$('#soundControl').textContent='🔇';
+    music.volume=.1;
+    music.play().then(()=>{
+      $('#soundStatus').textContent='';
+      ding();
+    }).catch(()=>{
+      soundEnabled=false;music.pause();$('#soundControl').textContent='🔇 เสียงปิด';
+      $('#soundControl').setAttribute('aria-pressed','false');
       $('#soundControl').setAttribute('aria-label','เปิดเพลงและเสียง');
-      $('#healthMessage').textContent='เปิดเพลงไม่สำเร็จ ลองกดเปิดเสียงอีกครั้ง';
+      $('#soundStatus').textContent='เล่นเพลงไม่ได้ กรุณาตรวจว่าไฟล์เพลงอยู่ในโฟลเดอร์เดียวกับเกม';
     });
   }else{
     music.pause();music.currentTime=0;
+    $('#soundStatus').textContent='';
     if('speechSynthesis' in window)speechSynthesis.cancel();
   }
 };
+$('#backgroundMusic').addEventListener('error',()=>{
+  if(soundEnabled)$('#soundStatus').textContent='โหลดเพลงไม่ได้ กรุณาตรวจการเชื่อมต่อหรือไฟล์เพลง';
+});
 
 $('#fontControl').onclick=()=>{
   fontLevel=fontLevel%3+1;
