@@ -131,25 +131,27 @@ p{margin:0;font-size:16px}
 .info-options{display:flex;flex-direction:column;width:100%;gap:10px}
 .option-btn{min-height:64px;border:2px solid #a8dc92;border-radius:18px;background:#fff;color:#2f4d3c;font:700 18px 'Mali',sans-serif;padding:10px 16px;cursor:pointer}
 .option-btn.on{background:#e4f4dd;border-color:#61a96f}
-.mood-row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
-.mood-btn{min-width:92px;min-height:64px;border:2px solid #ffd45c;border-radius:18px;background:#fff;font:700 16px 'Mali',sans-serif;cursor:pointer}
-.mood-btn.on{background:#fff1c4;border-color:#e6aa30}
-.memo{width:min(520px,100%);min-height:100px;border:3px solid #cfe3cc;border-radius:18px;padding:12px;font:700 17px 'Mali',sans-serif;color:#2f4d3c;resize:vertical}
 .info-card{width:100%;max-width:520px;border:3px solid #fff;border-radius:22px;background:#fff;padding:16px;box-shadow:0 4px 0 #cfe3cc;white-space:pre-line}
+.shadow-card{width:min(240px,70vw);height:160px;display:grid;place-items:center;border:4px solid #fff;border-radius:24px;background:linear-gradient(#dff3ff,#b9dfaa);font-size:92px;text-shadow:0 6px 0 rgba(0,0,0,.12)}
+.shadow-card span{filter:grayscale(1) brightness(0)}
+.shadow-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:520px}
+.shadow-choice{min-height:88px;border:3px solid #fff;border-radius:20px;background:#fff;color:var(--ink);font:700 18px 'Mali',sans-serif;cursor:pointer}
+.shadow-choice span{display:block;font-size:36px}
 .scr:not(#start){padding-top:84px}
-.level-btn,.wait-btn,.timer-btn,.spot-level,.decorate-btn,.mood-btn,.option-btn{font-size:18px}
-#app[data-font="2"] :is(.level-btn,.wait-btn,.timer-btn,.spot-level,.decorate-btn,.mood-btn,.option-btn){font-size:21px}
-#app[data-font="3"] :is(.level-btn,.wait-btn,.timer-btn,.spot-level,.decorate-btn,.mood-btn,.option-btn){font-size:24px}
+.level-btn,.wait-btn,.timer-btn,.spot-level,.decorate-btn,.option-btn{font-size:18px}
+#app[data-font="2"] :is(.level-btn,.wait-btn,.timer-btn,.spot-level,.decorate-btn,.option-btn,.shadow-choice){font-size:21px}
+#app[data-font="3"] :is(.level-btn,.wait-btn,.timer-btn,.spot-level,.decorate-btn,.option-btn,.shadow-choice){font-size:24px}
 @keyframes flipin{from{transform:rotateY(90deg)}to{transform:rotateY(0)}}
 .card:not(.open):not(.done):not(.peek),.card.open,.card.peek{animation:flipin .3s ease-out}
-:is(.menu,.level-btn,.wait-btn,.timer-btn,.spot-level,.decorate-btn,.mood-btn,.option-btn,.font-control,.sound-control){transition:transform .22s cubic-bezier(.34,1.56,.64,1)}
-:is(.menu,.level-btn,.wait-btn,.timer-btn,.spot-level,.decorate-btn,.mood-btn,.option-btn,.font-control,.sound-control):active{transform:scale(.94)}
+:is(.menu,.level-btn,.wait-btn,.timer-btn,.spot-level,.decorate-btn,.option-btn,.shadow-choice,.font-control,.sound-control){transition:transform .22s cubic-bezier(.34,1.56,.64,1)}
+:is(.menu,.level-btn,.wait-btn,.timer-btn,.spot-level,.decorate-btn,.option-btn,.shadow-choice,.font-control,.sound-control):active{transform:scale(.94)}
 </style>
 </head>
 <body>
 <div id="app">
 <button class="font-control" id="fontControl" type="button" aria-label="ปรับขนาดตัวอักษร">A</button>
-<button class="sound-control" id="soundControl" type="button" aria-label="เปิดหรือปิดเสียง">🔇</button>
+<button class="sound-control" id="soundControl" type="button" aria-label="เปิดเพลงและเสียง">🔇</button>
+<audio id="backgroundMusic" src="pripac-relaxed-gaming-vibes-323631.mp3" loop preload="none"></audio>
 
 <section class="scr on cover-start" id="start">
   <h1>แวะเล่น<em>แวะยิ้ม</em></h1>
@@ -170,9 +172,9 @@ p{margin:0;font-size:16px}
   </div>
   <button class="menu m1" data-go="match"><span>🃏</span><div><b>จับคู่ภาพ</b><small>หาภาพที่เหมือนกัน</small></div></button>
   <button class="menu m2" data-go="spot"><span>🔍</span><div><b>จับผิดภาพ</b><small>สังเกตจุดที่แตกต่าง</small></div></button>
-  <button class="menu m3" data-go="garden"><span>🪴</span><div><b>สวนของฉัน</b><small>สะสมดอกไม้ ตกแต่งสวน</small></div></button>
   <button class="menu m1" data-go="health"><span>💧</span><div><b>รู้เรื่องสุขภาพ</b><small>เลือกคำตอบสบาย ๆ ไม่สอบ</small></div></button>
-  <button class="menu m2" data-go="mood"><span>💛</span><div><b>บันทึกอารมณ์ก่อนพบหมอ</b><small>เลือกความรู้สึกและโน้ตสั้น ๆ</small></div></button>
+  <button class="menu m2" data-go="shadow"><span>🌑</span><div><b>ทายเงา</b><small>ดูเงาแล้วเลือกภาพที่ใช่</small></div></button>
+  <button class="menu m3" data-go="garden"><span>🪴</span><div><b>สวนของฉัน</b><small>สะสมดอกไม้ ตกแต่งสวน</small></div></button>
   <button class="btn w" data-go="start">🏠 กลับหน้าหลัก</button>
 </section>
 
@@ -209,6 +211,7 @@ p{margin:0;font-size:16px}
   <h2>รู้เรื่องสุขภาพ</h2>
   <p class="sub">ตอบได้ตามอารมณ์ ไม่ต้องคะแนน ไม่มีคำตอบผิด</p>
   <p class="sub">ข้อมูลทั่วไปเพื่อพักใจ ไม่ใช่คำวินิจฉัยหรือแทนคำแนะนำแพทย์</p>
+  <p class="chip" id="healthProgress" aria-live="polite">ข้อ 1 จาก 10</p>
   <div class="info-card">
     <h3 id="healthQuestion" style="margin:0 0 12px;font-size:22px"></h3>
     <div class="info-options" id="healthOptions"></div>
@@ -217,22 +220,14 @@ p{margin:0;font-size:16px}
   <div class="row"><button class="btn w" data-go="menu">← กลับ</button><button class="btn" id="healthNext" type="button">ข้อต่อไป →</button></div>
 </section>
 
-<section class="scr" id="mood">
-  <h2>ก่อนพบหมอ</h2>
-  <p class="sub">เลือกสิ่งที่ตรงกับวันนี้ แล้วอ่านให้นักจันทร์ฟังได้</p>
-  <div class="mood-row" aria-label="เลือกอารมณ์">
-    <button class="mood-btn" type="button" data-mood="สบายใจ">😊<br>สบายใจ</button>
-    <button class="mood-btn" type="button" data-mood="กังวล">😟<br>กังวล</button>
-    <button class="mood-btn" type="button" data-mood="เหนื่อย">😴<br>เหนื่อย</button>
-    <button class="mood-btn" type="button" data-mood="เจ็บปวด">🩹<br>เจ็บปวด</button>
-  </div>
-  <textarea class="memo" id="moodMemo" maxlength="160" aria-label="บันทึกสั้น ๆ" placeholder="อยากให้หมอรู้เรื่องอะไร เช่น เหนื่อย 2 วัน ปวดเวลาเดิน..."></textarea>
-  <div class="info-card" id="moodSummary">วันนี้ยังไม่มีข้อมูลที่บันทึกไว้</div>
-  <p class="sub">ข้อความนี้ไม่ถูกเก็บไว้ในเครื่อง ออกจากหน้านี้แล้วจะหายไป การอ่านให้ฟังจะดังออกลำโพง ใช้หูฟังได้ถ้าไม่อยากให้คนอื่นได้ยิน</p>
-  <div class="row">
-    <button class="btn w" data-go="menu">← กลับ</button>
-    <button class="btn" id="moodSpeak" type="button">🔊 อ่านให้ฟัง</button>
-  </div>
+<section class="scr" id="shadow">
+  <h2>ทายเงา</h2>
+  <p class="sub">ดูเงาดำ แล้วเลือกภาพที่คิดว่าใช่</p>
+  <p class="chip" id="shadowProgress">ข้อ 1 จาก 5</p>
+  <div class="shadow-card" aria-label="ภาพเงาปริศนา"><span id="shadowEmoji"></span></div>
+  <div class="shadow-choices" id="shadowChoices"></div>
+  <p class="encourage" id="shadowMessage" aria-live="polite">ตอบไม่ถูกก็ลองใหม่ได้</p>
+  <div class="row"><button class="btn w" data-go="menu">← กลับ</button><button class="btn" id="shadowNext" type="button">ข้อต่อไป →</button></div>
 </section>
 
 <section class="scr" id="win">
@@ -266,14 +261,21 @@ try{garden=JSON.parse(localStorage.getItem('wwg')||'[]')}catch(e){}
 try{decorations=JSON.parse(localStorage.getItem('wwDecor')||'[]')}catch(e){}
 const save=()=>{try{localStorage.setItem('wwg',JSON.stringify(garden));localStorage.setItem('wwDecor',JSON.stringify(decorations))}catch(e){}};
 const shuf=a=>[...a].sort(()=>Math.random()-.5);
-const inits={match,spot,win,garden:drawGarden,health:initHealth,mood:initMood};
+const inits={match,spot,win,garden:drawGarden,health:initHealth,shadow:initShadow};
 function go(id){clearInterval(T);document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id==id));inits[id]&&inits[id]()}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
 
 const healthQuestions=[
-  {q:'ควรดื่มน้ำประมาณเมื่อไหร่?',options:['ค่อย ๆ ดื่มตลอดทั้งวัน','ดื่มครั้งเดียวให้ครบ','ไม่ต้องดื่มถ้าไม่ค่อยหิวน้ำ'],a:0,note:'การดื่มน้ำสม่ำเสมอช่วยให้ร่างกายชุ่มชื้น แต่ปริมาณที่เหมาะสมอาจต่างกันตามแพทย์แนะนำ'},
-  {q:'เมื่อนั่งรอคิวนานควรทำอย่างไร?',options:['ลุกยืดเส้นตามสะดวก','นั่งนิ่งตลอดเวลา','ลุกเดินเร็ว ๆ ไม่พัก'],a:0,note:'สามารถลุกยืดเส้นช้า ๆ และขอความช่วยเหลือหากรู้สึกไม่มั่นคง'},
-  {q:'การพักผ่อนระหว่างรอหมอควรเป็นอย่างไร?',options:['หายใจช้า ๆ แล้วสังเกตรอบตัว','พยายามเก็บทุกอย่างให้เร็วที่สุด','ไม่ควรหยุดพักเลย'],a:0,note:'การหายใจช้า ๆ ไม่เร่งรีบอาจช่วยให้รู้สึกสงบลง'}
+  {q:'ถ้าแพทย์ไม่ได้จำกัดน้ำ การดื่มน้ำแบบใดทำได้ง่าย?',options:['จิบบ่อย ๆ ตามสะดวก','ดื่มรวดเดียวให้มาก','ฝืนดื่มแม้ไม่สบาย'],a:0,note:'ความต้องการน้ำต่างกัน หากได้รับคำแนะนำจำกัดน้ำให้ทำตามทีมรักษา'},
+  {q:'ระหว่างรอนานและรู้สึกเมื่อย ควรทำอย่างไร?',options:['ขยับตัวเบา ๆ หากทำไหว','ฝืนเดินแม้เวียนหัว','ไม่บอกใครเมื่อรู้สึกไม่สบาย'],a:0,note:'ขยับเท่าที่ไหวและขอความช่วยเหลือจากเจ้าหน้าที่ได้เสมอ'},
+  {q:'ถ้ามีคำถามที่อยากถามแพทย์ ช่วยจำได้อย่างไร?',options:['จดสั้น ๆ ไว้ก่อน','กังวลว่าจะลืมอย่างเดียว','ไม่ต้องถามเรื่องที่สงสัย'],a:0,note:'การจดคำถามช่วยให้เล่าได้ครบเมื่อถึงเวลาพบแพทย์'},
+  {q:'ถ้าต้องกินยาหลายชนิด ควรเตรียมอะไรไปพบแพทย์?',options:['รายชื่อยาหรือถ่ายรูปฉลากยา','หยุดยาก่อนมาเอง','จำชื่อยาโดยไม่ต้องจด'],a:0,note:'นำรายการยาและอาหารเสริมไปให้ทีมรักษาช่วยตรวจสอบ และไม่หยุดยาเอง'},
+  {q:'ถ้ามีอาการใหม่หรือเปลี่ยนไป ควรทำอย่างไร?',options:['บอกทีมรักษาพร้อมเล่าว่าเริ่มเมื่อไร','รอจนจำไม่ได้แล้วค่อยเล่า','ปรับยาเองก่อน'],a:0,note:'การบอกอาการและเวลาที่เริ่มช่วยให้ทีมรักษาประเมินได้เหมาะสม'},
+  {q:'ถ้ารู้สึกเหนื่อยระหว่างทำกิจกรรม ควรทำอย่างไร?',options:['พักและบอกผู้ดูแลหรือทีมรักษา','ฝืนทำต่อให้เสร็จ','โทษตัวเองที่ทำได้น้อย'],a:0,note:'พักได้เมื่อรู้สึกเหนื่อย และแจ้งทีมรักษาหากกังวลหรืออาการเปลี่ยนไป'},
+  {q:'ถ้ากังวลก่อนพบแพทย์ ลองทำอะไรระหว่างรอได้?',options:['หายใจช้า ๆ หรือขอคนใกล้ชิดอยู่ด้วย','เก็บความกังวลไว้คนเดียวเสมอ','รีบตัดสินใจเรื่องการรักษาเอง'],a:0,note:'การขอแรงสนับสนุนเป็นเรื่องปกติ และบอกทีมรักษาได้ว่ากำลังกังวล'},
+  {q:'ถ้าไม่เข้าใจคำอธิบายจากทีมรักษา ควรทำอย่างไร?',options:['ขอให้ช่วยอธิบายอีกครั้งด้วยคำง่าย ๆ','พยักหน้าแม้ยังไม่เข้าใจ','ค้นหาแล้วปรับการรักษาเอง'],a:0,note:'ถามซ้ำหรือขอให้เขียนคำแนะนำให้ได้ เพื่อให้เข้าใจตรงกัน'},
+  {q:'เรื่องอาหารระหว่างรักษา ถ้าไม่แน่ใจควรปรึกษาใคร?',options:['ทีมรักษาหรือนักกำหนดอาหารของโรงพยาบาล','งดอาหารหลายอย่างเอง','ทำตามคำแนะนำที่ไม่รู้แหล่งที่มา'],a:0,note:'ความเหมาะสมของอาหารขึ้นกับแต่ละคน จึงควรถามทีมรักษาที่ดูแล'},
+  {q:'การดูแลตัวเองในวันที่รู้สึกไม่ไหว ควรจำอะไรไว้?',options:['ทำเท่าที่ไหวและขอความช่วยเหลือได้','ต้องทำทุกอย่างให้เหมือนวันปกติ','ไม่ควรบอกใครว่าลำบาก'],a:0,note:'แต่ละวันไม่เหมือนกัน การบอกคนใกล้ชิดหรือทีมรักษาช่วยให้ได้รับการดูแล'}
 ];
 let healthIndex=0;
 function initHealth(){
@@ -281,7 +283,8 @@ function initHealth(){
 }
 function renderHealth(){
   const item=healthQuestions[healthIndex];
-  $('#healthQuestion').textContent=(healthIndex+1)+'. '+item.q;
+  $('#healthProgress').textContent='ข้อ '+(healthIndex+1)+' จาก '+healthQuestions.length;
+  $('#healthQuestion').textContent=item.q;
   $('#healthOptions').innerHTML=item.options.map((text,i)=>`<button class="option-btn" type="button" data-answer="${i}">${text}</button>`).join('');
   $('#healthOptions').querySelectorAll('[data-answer]').forEach(btn=>btn.onclick=()=>{
     $('#healthOptions').querySelectorAll('[data-answer]').forEach(b=>b.classList.remove('on'));
@@ -296,6 +299,43 @@ $('#healthNext').onclick=()=>{
   $('#healthMessage').textContent='ไปอีกหนึ่งเรื่องง่าย ๆ กัน';renderHealth();
 };
 
+const shadowItems=[
+  {image:'🍌',name:'กล้วย'},{image:'🥭',name:'มะม่วง'},{image:'🍍',name:'สับปะรด'},
+  {image:'🌺',name:'ดอกชบา'},{image:'🌻',name:'ดอกทานตะวัน'},{image:'🌼',name:'ดอกไม้สีเหลือง'},
+  {image:'🐟',name:'ปลา'},{image:'🐢',name:'เต่า'},{image:'🦋',name:'ผีเสื้อ'}
+];
+let shadowIndex=0,shadowRound=[];
+function initShadow(){shadowIndex=0;shadowRound=shuf(shadowItems).slice(0,5);renderShadow()}
+function renderShadow(){
+  if(!shadowRound.length)shadowRound=shuf(shadowItems).slice(0,5);
+  const target=shadowRound[shadowIndex];
+  $('#shadowNext').textContent='ข้อต่อไป →';
+  $('#shadowProgress').textContent='ข้อ '+(shadowIndex+1)+' จาก '+shadowRound.length;
+  $('#shadowEmoji').textContent=target.image;
+  $('#shadowEmoji').style.filter='grayscale(1) brightness(0)';
+  $('#shadowMessage').textContent='ตอบไม่ถูกก็ลองใหม่ได้';
+  const choices=shuf([target,...shuf(shadowItems.filter(x=>x!==target)).slice(0,2)]);
+  $('#shadowChoices').innerHTML=choices.map(x=>`<button class="shadow-choice" type="button" data-shadow="${x.name}"><span>${x.image}</span>${x.name}</button>`).join('');
+  $('#shadowChoices').querySelectorAll('[data-shadow]').forEach(btn=>btn.onclick=()=>{
+    if(btn.dataset.shadow!==target.name){
+      $('#shadowMessage').textContent='ลองอีกทีนะ ค่อย ๆ ดูรูปทรง';
+      return;
+    }
+    $('#shadowMessage').textContent='ใช่แล้ว นั่นคือ'+target.name+' เก่งมาก!';
+    $('#shadowEmoji').style.filter='none';
+    $('#shadowChoices').querySelectorAll('button').forEach(b=>b.disabled=true);
+    if(shadowIndex===shadowRound.length-1)$('#shadowNext').textContent='กลับหน้าหลัก 🏠';
+    ding();
+  });
+}
+$('#shadowNext').onclick=()=>{
+  const solved=$('#shadowMessage').textContent.includes('ใช่แล้ว');
+  if(!solved){$('#shadowMessage').textContent='ลองเลือกคำตอบก่อนนะ ไม่มีเสียคะแนน';return}
+  if(shadowIndex===shadowRound.length-1){go('menu');return}
+  shadowIndex++;
+  renderShadow();
+};
+
 function ensureAudio(){
   const AC=window.AudioContext||window.webkitAudioContext;
   if(!audioContext&&AC)audioContext=new AC();
@@ -305,7 +345,23 @@ function ding(){if(!soundEnabled)return;ensureAudio();if(!audioContext)return;
   [880,1175].forEach((f,i)=>{const o=audioContext.createOscillator(),g=audioContext.createGain();o.frequency.value=f;o.type='sine';g.gain.value=.07;o.connect(g);g.connect(audioContext.destination);const s=audioContext.currentTime+i*.13;o.start(s);g.gain.exponentialRampToValueAtTime(.001,s+.14);o.stop(s+.14)});
 }
 function speak(text,force){if((!soundEnabled&&!force)||!('speechSynthesis' in window))return;const u=new SpeechSynthesisUtterance(text);u.lang='th-TH';u.rate=.85;u.pitch=1.05;speechSynthesis.cancel();speechSynthesis.speak(u)}
-$('#soundControl').onclick=()=>{soundEnabled=!soundEnabled;$('#soundControl').textContent=soundEnabled?'🔊':'🔇';if(soundEnabled)ding()};
+$('#soundControl').onclick=()=>{
+  const music=$('#backgroundMusic');
+  soundEnabled=!soundEnabled;
+  $('#soundControl').textContent=soundEnabled?'🔊':'🔇';
+  $('#soundControl').setAttribute('aria-label',soundEnabled?'ปิดเพลงและเสียง':'เปิดเพลงและเสียง');
+  if(soundEnabled){
+    music.volume=.12;
+    music.play().then(()=>ding()).catch(()=>{
+      soundEnabled=false;music.pause();$('#soundControl').textContent='🔇';
+      $('#soundControl').setAttribute('aria-label','เปิดเพลงและเสียง');
+      $('#healthMessage').textContent='เปิดเพลงไม่สำเร็จ ลองกดเปิดเสียงอีกครั้ง';
+    });
+  }else{
+    music.pause();music.currentTime=0;
+    if('speechSynthesis' in window)speechSynthesis.cancel();
+  }
+};
 
 $('#fontControl').onclick=()=>{
   fontLevel=fontLevel%3+1;
@@ -392,7 +448,9 @@ document.querySelectorAll('[data-spot]').forEach(btn=>btn.onclick=()=>{spotLevel
 function spot(){
   const f=[];let hints=3,mistakes=0;
   const target=spotLevel=='easy'?1:spotLevel=='medium'?3:5,m=MOD.slice(0,target);
-  const set={a:BASE,b:BASE.map((it,i)=>{const x=m.find(v=>v[0]==i);return x?[x[1],it[1],it[2],it[3]]:it}),d:m.map(v=>{const item=BASE[v[0]];return{x:item[1]/100,y:item[2]/100,radius:Math.max(26,item[3]*.65)}})};
+  const positions=shuf(BASE.map(item=>[item[1],item[2]]));
+  const layout=BASE.map((item,i)=>[item[0],positions[i][0],positions[i][1],item[3]]);
+  const set={a:layout,b:layout.map((it,i)=>{const x=m.find(v=>v[0]==i);return x?[x[1],it[1],it[2],it[3]]:it}),d:m.map(v=>{const item=layout[v[0]];return{x:item[1]/100,y:item[2]/100,radius:Math.max(26,item[3]*.65)}})};
   draw($('#sa'),set.a);draw($('#sb'),set.b);$('#sn').textContent=0;$('#sp').textContent=target;$('#shn').textContent=3;
   [$('#sa'),$('#sb')].forEach(el=>el.onclick=e=>{
     const r=el.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
@@ -443,27 +501,6 @@ $('#gardenName').oninput=e=>{
   $('#gardenTitle').textContent=name?name+' 🌿':'สวนของฉัน';
   try{localStorage.setItem('wwGardenName',name)}catch(e){}
 };
-
-let selectedMood='';
-function initMood(){
-  $('#moodMemo').value='';
-  selectedMood='';
-  document.querySelectorAll('[data-mood]').forEach(b=>b.classList.remove('on'));
-  updateMoodSummary();
-}
-function updateMoodSummary(){
-  const memo=$('#moodMemo').value.trim();
-  const moodText=selectedMood?'อารมณ์วันนี้: '+selectedMood:'อารมณ์วันนี้: ยังไม่ได้เลือก';
-  const memoText=memo?'เรื่องที่อยากบอกหมอ: '+memo:'ยังไม่มีบันทึกเพิ่มเติม';
-  $('#moodSummary').textContent=moodText+'\n'+memoText;
-}
-document.querySelectorAll('[data-mood]').forEach(btn=>btn.onclick=()=>{
-  selectedMood=btn.dataset.mood;
-  document.querySelectorAll('[data-mood]').forEach(b=>b.classList.toggle('on',b===btn));
-  updateMoodSummary();ding();
-});
-$('#moodMemo').oninput=updateMoodSummary;
-$('#moodSpeak').onclick=()=>{updateMoodSummary();speak($('#moodSummary').textContent,true)};
 
 document.querySelectorAll('[data-decor]').forEach(btn=>btn.onclick=()=>{
   const decor=btn.dataset.decor;
