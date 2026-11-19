@@ -1,4 +1,5 @@
-const CACHE_VERSION='ww-v2';
+const CACHE_VERSION='ww-v3';
+const MUSIC_FILE='pripac-relaxed-gaming-vibes-323631.mp3';
 const CORE_FILES=[
   './',
   'index.html',
@@ -7,7 +8,7 @@ const CORE_FILES=[
   'icon-512.png',
   'app-cover-mobile.png',
   'app-cover-desktop.png',
-  'pripac-relaxed-gaming-vibes-323631.mp3'
+  MUSIC_FILE
 ];
 
 self.addEventListener('install',event=>{
@@ -28,7 +29,34 @@ self.addEventListener('activate',event=>{
 
 self.addEventListener('fetch',event=>{
   const request=event.request;
-  if(request.method!=='GET'||request.headers.has('range'))return;
+  if(request.method!=='GET')return;
+
+  const range=request.headers.get('range');
+  if(range&&new URL(request.url).pathname.endsWith('/'+MUSIC_FILE)){
+    event.respondWith((async()=>{
+      const musicUrl=new URL(MUSIC_FILE,self.registration.scope).href;
+      const cached=await caches.match(musicUrl);
+      if(!cached)return fetch(request);
+
+      const match=/^bytes=(\d*)-(\d*)$/.exec(range);
+      const data=await cached.arrayBuffer();
+      if(!match)return new Response(null,{status:416,headers:{'Content-Range':'bytes */'+data.byteLength}});
+
+      const start=match[1]?Number(match[1]):Math.max(0,data.byteLength-Number(match[2]));
+      const end=match[2]&&match[1]?Math.min(Number(match[2]),data.byteLength-1):data.byteLength-1;
+      if(start>=data.byteLength||end<start)return new Response(null,{status:416,headers:{'Content-Range':'bytes */'+data.byteLength}});
+
+      const body=data.slice(start,end+1);
+      return new Response(body,{status:206,headers:{
+        'Accept-Ranges':'bytes',
+        'Content-Length':String(body.byteLength),
+        'Content-Range':'bytes '+start+'-'+end+'/'+data.byteLength,
+        'Content-Type':'audio/mpeg'
+      }});
+    })());
+    return;
+  }
+  if(range)return;
 
   const isNavigation=request.mode==='navigate';
   event.respondWith(
