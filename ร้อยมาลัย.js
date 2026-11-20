@@ -6,7 +6,7 @@ const SRC=(k,v)=>'fl-'+(k=='rak'?'rak'+v:k)+'.webp';
 const PILE_H={marigold:54,jasmine:56,rak:44},STICK_H={marigold:46,jasmine:48,rak:38};
 const N=8,STEP=37,SIZE=48,KEY='wwGarlandSeq';
 const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
-const HAND='<svg class="gl-hand" viewBox="0 0 100 100" width="96" height="96" aria-hidden="true"><g stroke="#c98b60" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="#f6d2b0"><path d="M70 0 L100 22 L100 60 Q84 66 68 56 L52 44 Q58 20 70 0Z"/><path d="M54 44 Q40 52 28 62 Q18 70 22 75 Q28 78 36 70 Q46 62 62 54Z"/><path d="M64 56 Q52 68 40 78 Q31 86 36 90 Q43 92 52 82 Q66 70 78 62Z"/></g></svg>';
+const HAND='<svg class="gl-hand" viewBox="0 0 100 100" width="96" height="96" overflow="visible" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><g stroke="#c98b60"><path d="M135 -20L70 40" stroke-width="31"/><ellipse cx="62" cy="48" rx="20" ry="17" fill="#c98b60" stroke-width="5"/><path d="M54 44L25 72" stroke-width="16"/><path d="M68 58L28 76" stroke-width="16"/></g><g stroke="#f6d2b0"><path d="M135 -20L70 40" stroke-width="26"/><ellipse cx="62" cy="48" rx="20" ry="17" fill="#f6d2b0" stroke-width="0"/><path d="M54 44L25 72" stroke-width="11"/><path d="M68 58L28 76" stroke-width="11"/><path d="M60 40Q70 36 76 44M62 50Q72 48 78 56" stroke="#e3b48c" stroke-width="2"/></g></g></svg>';
 const css=document.createElement('style');
 css.textContent=`
 #glStage{position:relative;width:100%;max-width:340px;display:flex;flex-direction:column;align-items:center;gap:6px}
