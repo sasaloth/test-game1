@@ -140,6 +140,7 @@ p{margin:0;font-size:16px}
 .shadow-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:520px}
 .shadow-choice{min-height:88px;border:3px solid #fff;border-radius:20px;background:#fff;color:var(--ink);font:700 18px 'Mali',sans-serif;cursor:pointer}
 .shadow-choice span{display:block;font-size:36px}
+.garden-garland{width:100%;font-size:22px!important;letter-spacing:2px}
 .scr:not(#start){padding-top:84px}
 .level-btn,.wait-btn,.timer-btn,.spot-level,.decorate-btn,.option-btn{font-size:18px}
 #app[data-font="2"] :is(.level-btn,.wait-btn,.timer-btn,.spot-level,.decorate-btn,.option-btn,.shadow-choice){font-size:21px}
@@ -158,7 +159,7 @@ p{margin:0;font-size:16px}
 <audio id="backgroundMusic" loop preload="metadata" playsinline webkit-playsinline>
   <source src="pripac-relaxed-gaming-vibes-323631.mp3" type="audio/mpeg">
 </audio>
-<small class="version-label">อัปเดต v1.2</small>
+<small class="version-label">อัปเดต v1.3</small>
 
 <section class="scr on cover-start" id="start">
   <h1>แวะเล่น<em>แวะยิ้ม</em></h1>
@@ -181,6 +182,7 @@ p{margin:0;font-size:16px}
   <button class="menu m2" data-go="spot"><span>🔍</span><div><b>จับผิดภาพ</b><small>สังเกตจุดที่แตกต่าง</small></div></button>
   <button class="menu m1" data-go="health"><span>💧</span><div><b>รู้เรื่องสุขภาพ</b><small>เลือกคำตอบสบาย ๆ ไม่สอบ</small></div></button>
   <button class="menu m2" data-go="shadow"><span>🌑</span><div><b>ทายเงา</b><small>ดูเงาแล้วเลือกภาพที่ใช่</small></div></button>
+  <button class="menu m1" data-go="garland"><span>🌺</span><div><b>ร้อยมาลัย</b><small>เรียงดอกไม้ตามลาย แล้วนำไปแต่งสวน</small></div></button>
   <button class="menu m3" data-go="garden"><span>🪴</span><div><b>สวนของฉัน</b><small>สะสมดอกไม้ ตกแต่งสวน</small></div></button>
   <button class="btn w" data-go="start">🏠 กลับหน้าหลัก</button>
 </section>
@@ -237,6 +239,9 @@ p{margin:0;font-size:16px}
   <div class="row"><button class="btn w" data-go="menu">← กลับ</button><button class="btn" id="shadowNext" type="button">ข้อต่อไป →</button></div>
 </section>
 
+<!-- ร้อยมาลัย: เนื้อหาทั้งหมดสร้างโดย garland.js -->
+<section class="scr" id="garland"></section>
+
 <section class="scr" id="win">
   <div class="sun" style="font-size:100px">😊</div>
   <h1 style="font-size:40px">เก่งมาก!</h1>
@@ -249,7 +254,7 @@ p{margin:0;font-size:16px}
 <section class="scr" id="garden">
   <h2 id="gardenTitle">สวนของฉัน</h2>
   <input class="garden-name" id="gardenName" maxlength="24" aria-label="ชื่อสวน" placeholder="ตั้งชื่อสวนของคุณ">
-  <div class="bar"><span class="chip">🌼 <span id="gn">0</span> ดอก</span><span class="chip">⭐ <span id="gardenStars">0</span></span></div>
+  <div class="bar"><span class="chip">🌼 <span id="gn">0</span> ดอก</span><span class="chip">🎀 <span id="garlandCount">0</span> มาลัย</span><span class="chip">⭐ <span id="gardenStars">0</span></span></div>
   <div class="garden-tools" aria-label="ของประดับสวน">
     <button class="decorate-btn on" type="button" data-decor="none">🌱 ธรรมชาติ</button>
     <button class="decorate-btn" type="button" data-decor="bench">🪑 ม้านั่ง</button>
@@ -263,14 +268,17 @@ p{margin:0;font-size:16px}
 </div>
 <script>
 const $=s=>document.querySelector(s),FL=['🌻','🌷','🌸','🌼','🌺','🪻','🌹'];
-let T,garden=[],decorations=[],matchCards=4,timerEnabled=false,fontLevel=1,waitMode=0,sessionRounds=0,matchScore=0,soundEnabled=false,audioContext=null,spotLevel='easy';
+let T,garden=[],decorations=[],garlands=0,matchCards=4,timerEnabled=false,fontLevel=1,waitMode=0,sessionRounds=0,matchScore=0,soundEnabled=false,audioContext=null,spotLevel='easy';
 try{garden=JSON.parse(localStorage.getItem('wwg')||'[]')}catch(e){}
 try{decorations=JSON.parse(localStorage.getItem('wwDecor')||'[]')}catch(e){}
-const save=()=>{try{localStorage.setItem('wwg',JSON.stringify(garden));localStorage.setItem('wwDecor',JSON.stringify(decorations))}catch(e){}};
+try{garlands=Number(localStorage.getItem('wwGarlands')||0)}catch(e){}
+const save=()=>{try{localStorage.setItem('wwg',JSON.stringify(garden));localStorage.setItem('wwDecor',JSON.stringify(decorations));localStorage.setItem('wwGarlands',String(garlands))}catch(e){}};
 const shuf=a=>[...a].sort(()=>Math.random()-.5);
-const inits={match,spot,win,garden:drawGarden,health:initHealth,shadow:initShadow};
+const inits={match,spot,win,garden:drawGarden,health:initHealth,shadow:initShadow,garland:garlandFallback};
 function go(id){clearInterval(T);document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id==id));inits[id]&&inits[id]()}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
+// แสดงเมื่อโหลด garland.js ไม่สำเร็จ (garland.js จะมาแทนที่ inits.garland เอง)
+function garlandFallback(){$('#garland').innerHTML='<h2>ร้อยมาลัย</h2><p class="sub">ไม่พบไฟล์ garland.js ในโฟลเดอร์เดียวกับเกม</p><button class="btn w" data-go="menu">← กลับ</button>'}
 
 const healthQuestions=[
   {q:'ถ้าแพทย์ไม่ได้จำกัดน้ำ การดื่มน้ำแบบใดทำได้ง่าย?',options:['จิบบ่อย ๆ ตามสะดวก','ดื่มรวดเดียวให้มาก','ฝืนดื่มแม้ไม่สบาย'],a:0,note:'ความต้องการน้ำต่างกัน หากได้รับคำแนะนำจำกัดน้ำให้ทำตามทีมรักษา'},
@@ -501,6 +509,7 @@ function drawGarden(){
   $('#gardenName').value=gardenName;
   $('#gardenTitle').textContent=gardenName?gardenName+' 🌿':'สวนของฉัน';
   $('#gn').textContent=garden.length;
+  $('#garlandCount').textContent=garlands;
   $('#gardenStars').textContent=matchScore;
   $('#gd').classList.remove('morning','afternoon','evening');
   const hour=new Date().getHours();
@@ -510,7 +519,8 @@ function drawGarden(){
   const butterflies=Math.floor(garden.length/5);
   const visitors=Array.from({length:butterflies},(_,i)=>`<span class="butterfly" style="left:${8+i*18}%;top:${18+(i%2)*22}%">🦋</span>`).join('');
   const decorMap={bench:'🪑',pond:'💧',lantern:'🏮'},decor=decorations.map(d=>`<span>${decorMap[d]||''}</span>`).join('');
-  $('#gd').innerHTML=flowers+visitors+decor;
+  const garlandDisplay=Array.from({length:garlands},()=>'<span class="garden-garland">🌺🌼🌺🌼🌺🌼🌺🌼</span>').join('');
+  $('#gd').innerHTML=flowers+visitors+decor+garlandDisplay;
 }
 $('#gardenName').oninput=e=>{
   const name=e.target.value.trim();
@@ -527,5 +537,6 @@ document.querySelectorAll('[data-decor]').forEach(btn=>btn.onclick=()=>{
 });
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script>
+<script src="garland.js"></script>
 </body>
 </html>
