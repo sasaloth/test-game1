@@ -1,13 +1,21 @@
-const CACHE_VERSION='ww-v3';
+const CACHE_VERSION='ww-v5';
 const MUSIC_FILE='pripac-relaxed-gaming-vibes-323631.mp3';
 const CORE_FILES=[
   './',
   'index.html',
+  'garland.js',
   'manifest.json',
   'icon-192.png',
   'icon-512.png',
   'app-cover-mobile.png',
   'app-cover-desktop.png',
+  'fl-tray.webp',
+  'fl-marigold.webp',
+  'fl-jasmine.webp',
+  'fl-rak1.webp',
+  'fl-rak2.webp',
+  'fl-rak3.webp',
+  'fl-rak4.webp',
   MUSIC_FILE
 ];
 
