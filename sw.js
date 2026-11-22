@@ -1,4 +1,4 @@
-const CACHE_VERSION='ww-v5';
+const CACHE_VERSION='ww-v6';
 const MUSIC_FILE='pripac-relaxed-gaming-vibes-323631.mp3';
 const CORE_FILES=[
   './',

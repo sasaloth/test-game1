@@ -146,23 +146,19 @@ p{margin:0;font-size:16px}
 .star-line{display:flex;align-items:center;gap:4px}
 @keyframes grow{0%{transform:scale(.15);opacity:.2}70%{transform:scale(1.18)}100%{transform:scale(1);opacity:1}}
 @keyframes burst{to{transform:translateY(-55px) scale(1.5);opacity:0}}
-.info-options{display:flex;flex-direction:column;width:100%;gap:10px}
-.option-btn{min-height:64px;border:2px solid #a8dc92;border-radius:18px;background:#fff;color:#2f4d3c;font:700 18px 'Mali',sans-serif;padding:10px 16px;cursor:pointer}
-.option-btn.on{background:#e4f4dd;border-color:#61a96f}
-.info-card{width:100%;max-width:520px;border:3px solid #fff;border-radius:22px;background:#fff;padding:16px;box-shadow:0 4px 0 #cfe3cc;white-space:pre-line}
 .shadow-card{width:min(240px,70vw);height:160px;display:grid;place-items:center;border:4px solid #fff;border-radius:24px;background:linear-gradient(#dff3ff,#b9dfaa);font-size:92px;text-shadow:0 6px 0 rgba(0,0,0,.12)}
 .shadow-card span{filter:grayscale(1) brightness(0)}
 .shadow-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:520px}
 .shadow-choice{min-height:88px;border:3px solid #fff;border-radius:20px;background:#fff;color:var(--ink);font:700 18px 'Mali',sans-serif;cursor:pointer}
 .shadow-choice span{display:block;font-size:36px}
 .scr:not(#start){padding-top:84px}
-.level-btn,.wait-btn,.timer-btn,.spot-level,.option-btn{font-size:18px}
-#app[data-font="2"] :is(.level-btn,.wait-btn,.timer-btn,.spot-level,.option-btn,.shadow-choice){font-size:21px}
-#app[data-font="3"] :is(.level-btn,.wait-btn,.timer-btn,.spot-level,.option-btn,.shadow-choice){font-size:24px}
+.level-btn,.wait-btn,.timer-btn,.spot-level{font-size:18px}
+#app[data-font="2"] :is(.level-btn,.wait-btn,.timer-btn,.spot-level,.shadow-choice){font-size:21px}
+#app[data-font="3"] :is(.level-btn,.wait-btn,.timer-btn,.spot-level,.shadow-choice){font-size:24px}
 @keyframes flipin{from{transform:rotateY(90deg)}to{transform:rotateY(0)}}
 .card:not(.open):not(.done):not(.peek),.card.open,.card.peek{animation:flipin .3s ease-out}
-:is(.menu,.level-btn,.wait-btn,.timer-btn,.spot-level,.option-btn,.shadow-choice,.font-control,.sound-control){transition:transform .22s cubic-bezier(.34,1.56,.64,1)}
-:is(.menu,.level-btn,.wait-btn,.timer-btn,.spot-level,.option-btn,.shadow-choice,.font-control,.sound-control):active{transform:scale(.94)}
+:is(.menu,.level-btn,.wait-btn,.timer-btn,.spot-level,.shadow-choice,.font-control,.sound-control){transition:transform .22s cubic-bezier(.34,1.56,.64,1)}
+:is(.menu,.level-btn,.wait-btn,.timer-btn,.spot-level,.shadow-choice,.font-control,.sound-control):active{transform:scale(.94)}
 </style>
 </head>
 <body>
@@ -173,7 +169,7 @@ p{margin:0;font-size:16px}
 <audio id="backgroundMusic" loop preload="metadata" playsinline webkit-playsinline>
   <source src="pripac-relaxed-gaming-vibes-323631.mp3" type="audio/mpeg">
 </audio>
-<small class="version-label">อัปเดต v1.4</small>
+<small class="version-label">อัปเดต v1.5</small>
 
 <section class="scr on cover-start" id="start">
   <h1>แวะเล่น<em>แวะยิ้ม</em></h1>
@@ -194,7 +190,6 @@ p{margin:0;font-size:16px}
   </div>
   <button class="menu m1" data-go="match"><span>🃏</span><div><b>จับคู่ภาพ</b><small>หาภาพที่เหมือนกัน</small></div></button>
   <button class="menu m2" data-go="spot"><span>🔍</span><div><b>จับผิดภาพ</b><small>สังเกตจุดที่แตกต่าง</small></div></button>
-  <button class="menu m1" data-go="health"><span>💧</span><div><b>รู้เรื่องสุขภาพ</b><small>เลือกคำตอบสบาย ๆ ไม่สอบ</small></div></button>
   <button class="menu m2" data-go="shadow"><span>🌑</span><div><b>ทายเงา</b><small>ดูเงาแล้วเลือกภาพที่ใช่</small></div></button>
   <button class="menu m1" data-go="garland"><span>🌺</span><div><b>ร้อยมาลัย</b><small>เรียงดอกไม้ให้ครบหนึ่งพวง</small></div></button>
   <button class="menu m3" data-go="lottery"><span>🎱</span><div><b>ลุ้นเลขมงคล แวะรับความสุข</b><small>ลุ้นลูกบอล 1–16 พร้อมคำทำนายดี ๆ</small></div></button>
@@ -228,19 +223,6 @@ p{margin:0;font-size:16px}
   <div class="sc" id="sa"></div>
   <div class="sc" id="sb"></div>
   <div class="row"><button class="btn w" data-go="menu">← กลับ</button><button class="btn" id="sh">💡 ขอคำใบ้<span class="badge" id="shn">3</span></button></div>
-</section>
-
-<section class="scr" id="health">
-  <h2>รู้เรื่องสุขภาพ</h2>
-  <p class="sub">ตอบได้ตามอารมณ์ ไม่ต้องคะแนน ไม่มีคำตอบผิด</p>
-  <p class="sub">ข้อมูลทั่วไปเพื่อพักใจ ไม่ใช่คำวินิจฉัยหรือแทนคำแนะนำแพทย์</p>
-  <p class="chip" id="healthProgress" aria-live="polite">ข้อ 1 จาก 10</p>
-  <div class="info-card">
-    <h3 id="healthQuestion" style="margin:0 0 12px;font-size:22px"></h3>
-    <div class="info-options" id="healthOptions"></div>
-  </div>
-  <p class="encourage" id="healthMessage" aria-live="polite">ลองอ่านช้า ๆ ได้เลย</p>
-  <div class="row"><button class="btn w" data-go="menu">← กลับ</button><button class="btn" id="healthNext" type="button">ข้อต่อไป →</button></div>
 </section>
 
 <section class="scr" id="shadow">
@@ -347,7 +329,7 @@ function startLottery(){
   },2800);
 }
 $('#lotteryStart').onclick=startLottery;
-const inits={match,spot,win,health:initHealth,shadow:initShadow,lottery:initLottery,garland:garlandFallback};
+const inits={match,spot,win,shadow:initShadow,lottery:initLottery,garland:garlandFallback};
 function go(id){
   clearInterval(T);
   if(id!=='lottery'){
@@ -364,39 +346,6 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b
 // แสดงเมื่อโหลด garland.js ไม่สำเร็จ (garland.js จะมาแทนที่ inits.garland เอง)
 function garlandFallback(){$('#garland').innerHTML='<h2>ร้อยมาลัย</h2><p class="sub">ไม่พบไฟล์ garland.js ในโฟลเดอร์เดียวกับเกม</p><button class="btn w" data-go="menu">← กลับ</button>'}
 
-const healthQuestions=[
-  {q:'ถ้าแพทย์ไม่ได้จำกัดน้ำ การดื่มน้ำแบบใดทำได้ง่าย?',options:['จิบบ่อย ๆ ตามสะดวก','ดื่มรวดเดียวให้มาก','ฝืนดื่มแม้ไม่สบาย'],a:0,note:'ความต้องการน้ำต่างกัน หากได้รับคำแนะนำจำกัดน้ำให้ทำตามทีมรักษา'},
-  {q:'ระหว่างรอนานและรู้สึกเมื่อย ควรทำอย่างไร?',options:['ขยับตัวเบา ๆ หากทำไหว','ฝืนเดินแม้เวียนหัว','ไม่บอกใครเมื่อรู้สึกไม่สบาย'],a:0,note:'ขยับเท่าที่ไหวและขอความช่วยเหลือจากเจ้าหน้าที่ได้เสมอ'},
-  {q:'ถ้ามีคำถามที่อยากถามแพทย์ ช่วยจำได้อย่างไร?',options:['จดสั้น ๆ ไว้ก่อน','กังวลว่าจะลืมอย่างเดียว','ไม่ต้องถามเรื่องที่สงสัย'],a:0,note:'การจดคำถามช่วยให้เล่าได้ครบเมื่อถึงเวลาพบแพทย์'},
-  {q:'ถ้าต้องกินยาหลายชนิด ควรเตรียมอะไรไปพบแพทย์?',options:['รายชื่อยาหรือถ่ายรูปฉลากยา','หยุดยาก่อนมาเอง','จำชื่อยาโดยไม่ต้องจด'],a:0,note:'นำรายการยาและอาหารเสริมไปให้ทีมรักษาช่วยตรวจสอบ และไม่หยุดยาเอง'},
-  {q:'ถ้ามีอาการใหม่หรือเปลี่ยนไป ควรทำอย่างไร?',options:['บอกทีมรักษาพร้อมเล่าว่าเริ่มเมื่อไร','รอจนจำไม่ได้แล้วค่อยเล่า','ปรับยาเองก่อน'],a:0,note:'การบอกอาการและเวลาที่เริ่มช่วยให้ทีมรักษาประเมินได้เหมาะสม'},
-  {q:'ถ้ารู้สึกเหนื่อยระหว่างทำกิจกรรม ควรทำอย่างไร?',options:['พักและบอกผู้ดูแลหรือทีมรักษา','ฝืนทำต่อให้เสร็จ','โทษตัวเองที่ทำได้น้อย'],a:0,note:'พักได้เมื่อรู้สึกเหนื่อย และแจ้งทีมรักษาหากกังวลหรืออาการเปลี่ยนไป'},
-  {q:'ถ้ากังวลก่อนพบแพทย์ ลองทำอะไรระหว่างรอได้?',options:['หายใจช้า ๆ หรือขอคนใกล้ชิดอยู่ด้วย','เก็บความกังวลไว้คนเดียวเสมอ','รีบตัดสินใจเรื่องการรักษาเอง'],a:0,note:'การขอแรงสนับสนุนเป็นเรื่องปกติ และบอกทีมรักษาได้ว่ากำลังกังวล'},
-  {q:'ถ้าไม่เข้าใจคำอธิบายจากทีมรักษา ควรทำอย่างไร?',options:['ขอให้ช่วยอธิบายอีกครั้งด้วยคำง่าย ๆ','พยักหน้าแม้ยังไม่เข้าใจ','ค้นหาแล้วปรับการรักษาเอง'],a:0,note:'ถามซ้ำหรือขอให้เขียนคำแนะนำให้ได้ เพื่อให้เข้าใจตรงกัน'},
-  {q:'เรื่องอาหารระหว่างรักษา ถ้าไม่แน่ใจควรปรึกษาใคร?',options:['ทีมรักษาหรือนักกำหนดอาหารของโรงพยาบาล','งดอาหารหลายอย่างเอง','ทำตามคำแนะนำที่ไม่รู้แหล่งที่มา'],a:0,note:'ความเหมาะสมของอาหารขึ้นกับแต่ละคน จึงควรถามทีมรักษาที่ดูแล'},
-  {q:'การดูแลตัวเองในวันที่รู้สึกไม่ไหว ควรจำอะไรไว้?',options:['ทำเท่าที่ไหวและขอความช่วยเหลือได้','ต้องทำทุกอย่างให้เหมือนวันปกติ','ไม่ควรบอกใครว่าลำบาก'],a:0,note:'แต่ละวันไม่เหมือนกัน การบอกคนใกล้ชิดหรือทีมรักษาช่วยให้ได้รับการดูแล'}
-];
-let healthIndex=0;
-function initHealth(){
-  healthIndex=0;$('#healthMessage').textContent='ลองอ่านช้า ๆ ได้เลย';renderHealth();
-}
-function renderHealth(){
-  const item=healthQuestions[healthIndex];
-  $('#healthProgress').textContent='ข้อ '+(healthIndex+1)+' จาก '+healthQuestions.length;
-  $('#healthQuestion').textContent=item.q;
-  $('#healthOptions').innerHTML=item.options.map((text,i)=>`<button class="option-btn" type="button" data-answer="${i}">${text}</button>`).join('');
-  $('#healthOptions').querySelectorAll('[data-answer]').forEach(btn=>btn.onclick=()=>{
-    $('#healthOptions').querySelectorAll('[data-answer]').forEach(b=>b.classList.remove('on'));
-    btn.classList.add('on');
-    const correct=Number(btn.dataset.answer)==item.a;
-    const text=correct?'ใช้ได้ดีในการดูแลตัวเอง: '+item.note:'สิ่งนี้ก็เป็นทางเลือก ลองพิจารณาอีกหน่อย: '+item.note;
-    $('#healthMessage').textContent=text;speak(text);
-  });
-}
-$('#healthNext').onclick=()=>{
-  healthIndex=(healthIndex+1)%healthQuestions.length;
-  $('#healthMessage').textContent='ไปอีกหนึ่งเรื่องง่าย ๆ กัน';renderHealth();
-};
 
 const shadowItems=[
   {image:'🍌',name:'กล้วย'},{image:'🥭',name:'มะม่วง'},{image:'🍍',name:'สับปะรด'},
