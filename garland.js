@@ -1,5 +1,5 @@
 /* ร้อยมาลัย (มือ + ไม้เสียบ) — เพิ่มใน index.html ก่อน </body> หลังสคริปต์หลัก: <script src="garland.js"></script>
-   สร้างหน้า #garland และปุ่มในเมนูให้เองถ้ายังไม่มี ปรับขนาดตามจอ (มือถือ/คอม) ใช้ตัวแปรกลางของเกม: $, inits, go, ding, speak, shuf */
+   สร้างหน้า #garland และปุ่มในเมนูให้เองถ้ายังไม่มี ปรับขนาดตามจอ (มือถือ/คอม) ใช้ตัวแปรกลางของเกม: $, inits, go, ding, speak, shuf, save, garlands, drawGarden */
 (()=>{
 const KEYS=['marigold','jasmine','rak'],NAME={marigold:'ดอกดาวเรือง',jasmine:'ดอกมะลิ',rak:'ดอกรัก'};
 const SRC=(k,v)=>'fl-'+(k=='rak'?'rak'+v:k)+'.webp';
@@ -119,13 +119,25 @@ async function thread(b,k,v){
   s.innerHTML=`<img src="${SRC(k,v)}" alt="${NAME[k]}" style="height:${sh}px">`;stk.append(s);
 }
 function done(){
-  $('#glMsg').textContent='มาลัยครบแล้ว! เยี่ยมมากเลย';
+  $('#glMsg').textContent='มาลัยครบแล้ว! เก็บเข้ามุมสวนเรียบร้อย';
   try{const all=JSON.parse(localStorage.getItem(KEY)||'[]');all.push(got.map(g=>SRC(g.k,g.v)));localStorage.setItem(KEY,JSON.stringify(all.slice(-5)))}catch(e){}
-  speak('เก่งมาก ร้อยมาลัยสำเร็จแล้ว');
+  garlands++;save();speak('เก่งมาก ร้อยมาลัยสำเร็จแล้ว');
   setTimeout(()=>go('win'),1300);
 }
 inits.garland=glInit;
 // หมุนจอ/ย่อขยายหน้าต่างก่อนเริ่มร้อย: จัดขนาดใหม่ (ไม่ทำถ้าร้อยไปแล้ว)
 addEventListener('resize',()=>{const g=$('#garland');if(g.classList.contains('on')&&!got.length&&!busy)glInit()});
 
+// สวน: วาดมาลัยด้วยภาพดอกไม้จริงแทนอีโมจิ
+const dg=drawGarden;
+drawGarden=function(){
+  dg();
+  const gd=$('#gd');gd.querySelectorAll('.garden-garland').forEach(e=>e.remove());
+  let all=[];try{all=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){}
+  all.forEach(seq=>{const s=document.createElement('span');s.className='garden-garland gl-mini';s.innerHTML=seq.map(src=>`<img src="${src}" alt="">`).join('');gd.append(s)});
+};
+inits.garden=drawGarden;
 })();
+
+// โหลด lottery.js ให้อัตโนมัติ (ไม่ต้องแก้ index.html) — ข้ามถ้า index.html เรียกไว้เองแล้ว
+if(!document.querySelector('script[src*="lottery.js"]')){const s=document.createElement('script');s.src='lottery.js';document.body.append(s)}

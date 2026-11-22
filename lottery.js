@@ -2,6 +2,7 @@
    แทนที่ฉากเครื่องลูกบอลเดิมในหน้า #lottery: แตะคันโยก -> ลูกบอลกลิ้งจริง -> ลูกบอลพุ่งออกมาตกบนแผ่นไม้
    ใช้ตัวแปรกลางของเกม: $, inits, ding, ensureAudio, audioContext, soundEnabled, playLotteryRollSound, lotteryFortunes */
 (()=>{
+if(window.__ltLoaded)return;window.__ltLoaded=true;
 const IW=1296,IH=1213;                                   // ขนาดภาพต้นฉบับ (พิกัดทั้งหมดอิงภาพนี้)
 const GL={cx:609.3,cy:509.2,rx:432.3,ry:367.7};          // วงรีด้านในลูกโหลแก้ว
 const BOX={cx:609.3,cy:510,R:366},BR=72;                 // วงกลมที่ลูกบอลกลิ้ง / รัศมีลูกบอล
