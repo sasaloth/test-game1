@@ -1,4 +1,4 @@
-const CACHE_VERSION='ww-v6';
+const CACHE_VERSION='ww-v15';
 const MUSIC_FILE='pripac-relaxed-gaming-vibes-323631.mp3';
 const CORE_FILES=[
   './',
@@ -16,6 +16,10 @@ const CORE_FILES=[
   'fl-rak2.webp',
   'fl-rak3.webp',
   'fl-rak4.webp',
+  'lt-frame.webp',
+  'lt-arm.webp',
+  'lt-handle.webp',
+  'lt-balls.png',
   MUSIC_FILE
 ];
 

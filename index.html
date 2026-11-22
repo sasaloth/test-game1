@@ -71,11 +71,13 @@ p{margin:0;font-size:16px}
 .lottery-scene{position:relative;width:min(100%,420px);height:390px;flex:none;overflow:hidden;border:4px solid #fff;border-radius:28px;background:linear-gradient(#a8dcf4 0 39%,#e6f3d9 39% 57%,#8fbd70 57% 100%);box-shadow:0 6px 0 #c6d6b7}
 .lottery-scene::before{content:'';position:absolute;left:0;right:0;bottom:29%;height:12px;background:repeating-linear-gradient(90deg,#c59a68 0 7px,#e0bd88 7px 14px);border-block:2px solid #a87e50}
 .lottery-scene::after{content:'🌼　🌷　🌻　🌺　🌼';position:absolute;left:0;right:0;bottom:3px;color:#fff4c2;text-align:center;font-size:clamp(20px,7vw,34px);letter-spacing:3px}
-.lottery-machine{position:absolute;z-index:2;left:50%;bottom:30px;width:min(78vw,310px);height:330px;transform:translateX(-50%)}
-.lottery-globe{position:absolute;z-index:2;top:0;left:50%;width:min(70vw,270px);height:min(70vw,270px);max-width:270px;max-height:270px;transform:translateX(-50%);overflow:hidden;border:9px solid rgba(255,255,255,.92);border-radius:50%;background:radial-gradient(circle at 35% 27%,rgba(255,255,255,.95),rgba(226,247,255,.64) 38%,rgba(163,213,220,.72) 78%);box-shadow:inset 0 0 0 3px rgba(139,174,177,.55),0 9px 16px rgba(50,77,57,.2)}
+.lottery-machine{position:absolute;z-index:2;left:50%;bottom:24px;width:min(94vw,365px);height:330px;transform:translateX(-50%)}
+.lottery-machine-frame{position:absolute;z-index:1;left:50%;bottom:0;width:min(94vw,365px);height:330px;transform:translateX(-50%);object-fit:contain;pointer-events:none}
+.lottery-globe{position:absolute;z-index:2;top:25px;left:50%;width:min(62vw,250px);height:min(62vw,250px);max-width:250px;max-height:250px;transform:translateX(-50%);overflow:hidden;border:0;border-radius:50%;background:radial-gradient(circle at 35% 27%,rgba(255,255,255,.22),rgba(226,247,255,.16) 38%,rgba(163,213,220,.08) 78%);box-shadow:inset 0 0 18px rgba(255,255,255,.5)}
 .lottery-globe::before{content:'';position:absolute;z-index:3;top:9%;left:16%;width:17%;height:35%;border-radius:50%;background:rgba(255,255,255,.6);transform:rotate(25deg);pointer-events:none}
-.lottery-balls{position:absolute;inset:20px;display:grid;grid-template-columns:repeat(4,1fr);align-content:center;justify-items:center;gap:5px;transition:transform .2s}
-.lottery-ball{display:grid;place-items:center;width:clamp(36px,10vw,48px);height:clamp(36px,10vw,48px);border:2px solid rgba(255,255,255,.96);border-radius:50%;background:radial-gradient(circle at 32% 26%,#fff 0 12%,#f8e9dc 55%,#e9cdb7 100%);box-shadow:0 3px 5px rgba(55,70,53,.28);color:#367452;font:700 18px 'Mali',sans-serif;transition:opacity .25s,transform .25s,box-shadow .25s}
+.lottery-balls{position:absolute;inset:12px;transition:transform .2s}
+.lottery-balls::before{content:'';position:absolute;left:50%;top:50%;width:72%;height:72%;transform:translate(-50%,-50%);border:2px dashed rgba(255,255,255,.22);border-radius:50%;pointer-events:none}
+.lottery-ball{position:absolute;display:grid;place-items:center;width:clamp(34px,8.4vw,42px);height:clamp(34px,8.4vw,42px);border:2px solid rgba(255,255,255,.96);border-radius:50%;background:radial-gradient(circle at 32% 26%,#fff 0 12%,#f8e9dc 55%,#e9cdb7 100%);box-shadow:0 3px 5px rgba(55,70,53,.28);color:#367452;font:700 18px 'Mali',sans-serif;transition:left .22s ease-out,top .22s ease-out,opacity .25s,transform .25s,box-shadow .25s}
 .lottery-ball:nth-child(3n){background:radial-gradient(circle at 32% 26%,#fff 0 12%,#e7f2e3 55%,#bdd5b6 100%)}
 .lottery-ball:nth-child(3n+1){background:radial-gradient(circle at 32% 26%,#fff 0 12%,#fff1c4 55%,#e8d18c 100%)}
 .lottery-machine.spinning{animation:lottery-rattle .16s ease-in-out infinite}
@@ -83,10 +85,15 @@ p{margin:0;font-size:16px}
 .lottery-machine.spinning .lottery-balls{animation:balls-tumble .34s ease-in-out infinite alternate}
 .lottery-machine.spinning .lottery-ball{animation:ball-bounce .28s ease-in-out infinite alternate;animation-delay:var(--ball-delay)}
 .lottery-machine.has-result .lottery-ball:not(.selected){opacity:.42}
-.lottery-machine.has-result .lottery-ball.selected{z-index:1;transform:scale(1.2);box-shadow:0 0 0 5px #ffd45c,0 5px 12px rgba(40,70,45,.4);opacity:1}
-.lottery-wood-base{position:absolute;z-index:1;left:50%;bottom:0;width:min(72vw,250px);height:94px;transform:translateX(-50%);display:grid;place-items:center;border:5px solid #925c32;border-radius:42% 42% 20px 20px;background:linear-gradient(145deg,#d89a57,#a96836);box-shadow:inset 0 6px 0 rgba(255,225,172,.35),0 8px 0 #80502f}
-.lottery-wood-base::before{content:'';position:absolute;top:-30px;left:50%;width:34px;height:42px;transform:translateX(-50%);background:linear-gradient(90deg,#9b6035,#d99b59,#9b6035)}
-.lottery-wood-base span{position:relative;z-index:1;display:grid;place-items:center;width:50px;height:50px;border:3px solid #f3d69a;border-radius:50%;background:#fff1c4;font-size:30px}
+.lottery-machine.has-result .lottery-ball.selected{z-index:8;left:50%!important;top:calc(50% - 2px)!important;transform:translate(-50%,-50%) scale(1.28);box-shadow:0 0 0 5px #ffd45c,0 5px 12px rgba(40,70,45,.4);opacity:1}
+.lottery-wood-base{display:none}
+.lottery-handle-button{position:absolute;z-index:5;right:-28px;bottom:116px;width:118px;height:74px;border:0;padding:0;background:transparent;cursor:pointer;touch-action:manipulation;transform-origin:42% 50%}
+.lottery-handle-button:focus-visible{outline:5px solid #ffd45c;outline-offset:6px;border-radius:24px}
+.lottery-arm-image{position:absolute;right:72px;top:19px;width:72px;height:38px;object-fit:contain;pointer-events:none}
+.lottery-handle-image{position:absolute;right:-2px;top:2px;width:92px;height:auto;object-fit:contain;filter:drop-shadow(0 5px 3px rgba(74,59,38,.24));pointer-events:none}
+.lottery-handle-button:active,.lottery-machine.spinning .lottery-handle-button{transform:rotate(24deg)}
+.lottery-machine.spinning .lottery-handle-button{animation:handle-spin .7s ease-in-out infinite alternate}
+.lottery-machine::after{content:'';position:absolute;z-index:4;right:7%;bottom:20%;width:24px;height:48px;border-left:5px solid #e6aa30;border-right:5px solid #fff1c4;border-radius:0 0 12px 12px;opacity:.5;pointer-events:none}
 .lottery-result{width:100%;max-width:420px;padding:16px;border:3px solid #ffe18a;border-radius:22px;background:#fffaf0;box-shadow:0 4px 0 #ead7a8;display:flex;flex-direction:column;align-items:center;gap:6px}
 #lotteryResult[hidden]{display:none}
 .lottery-result-number{display:grid;place-items:center;width:88px;height:88px;border:5px solid #fff;border-radius:50%;background:#e2f2d9;color:#2f7a4a;font-size:48px;font-weight:700;box-shadow:0 4px 0 #b8d7a8}
@@ -97,7 +104,8 @@ p{margin:0;font-size:16px}
 @keyframes globe-rattle{to{transform:translateX(-50%) rotate(2deg)}}
 @keyframes balls-tumble{to{transform:translate(5px,-3px) rotate(7deg)}}
 @keyframes ball-bounce{to{transform:translateY(-5px) rotate(10deg)}}
-@media(max-width:420px){.lottery-scene{height:360px}.lottery-machine{bottom:24px;height:300px}.lottery-wood-base{height:82px}.lottery-globe{border-width:8px}.lottery-balls{inset:18px;gap:4px}.lottery-ball{font-size:16px}}
+@keyframes handle-spin{to{transform:rotate(32deg)}}
+@media(max-width:420px){.lottery-scene{height:360px}.lottery-machine{bottom:12px;height:320px}.lottery-machine-frame{width:365px;height:330px}.lottery-globe{top:25px;width:min(62vw,250px);height:min(62vw,250px)}.lottery-balls{inset:12px}.lottery-ball{font-size:16px}.lottery-handle-button{right:-18px;bottom:112px;width:105px;height:68px}.lottery-handle-image{width:82px}.lottery-arm-image{right:62px;width:62px}}
 .font-control{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;z-index:50;min-width:68px;min-height:64px;border:3px solid #fff;border-radius:32px;background:#fff;color:var(--gd);box-shadow:0 4px 12px rgba(45,74,58,.18);font:700 18px 'Mali',sans-serif;cursor:pointer}
 #app[data-font="2"] h1{font-size:48px}
 #app[data-font="2"] h2{font-size:30px}
@@ -169,7 +177,7 @@ p{margin:0;font-size:16px}
 <audio id="backgroundMusic" loop preload="metadata" playsinline webkit-playsinline>
   <source src="pripac-relaxed-gaming-vibes-323631.mp3" type="audio/mpeg">
 </audio>
-<small class="version-label">อัปเดต v1.5</small>
+<small class="version-label">อัปเดต v1.14</small>
 
 <section class="scr on cover-start" id="start">
   <h1>แวะเล่น<em>แวะยิ้ม</em></h1>
@@ -252,10 +260,14 @@ p{margin:0;font-size:16px}
   <p class="sub">ลูกบอลหมายเลข 1–16 ลุ้นสนุก ๆ ไม่ต้องรีบ</p>
   <div class="lottery-scene" role="group" aria-label="เครื่องโหลแก้วสุ่มลูกบอลในสวนดอกไม้">
     <div class="lottery-machine" id="lotteryMachine">
+      <img class="lottery-machine-frame" src="lt-frame.webp" alt="">
       <div class="lottery-globe">
         <div class="lottery-balls" id="lotteryBalls" role="img" aria-label="ลูกบอลหมายเลข 1 ถึง 16"></div>
       </div>
-      <div class="lottery-wood-base"><span aria-hidden="true">🌼</span></div>
+      <button class="lottery-handle-button" id="lotteryHandle" type="button" aria-label="โยกคันโยกเพื่อเริ่มลุ้นเลข">
+        <img class="lottery-arm-image" src="lt-arm.webp" alt="" aria-hidden="true">
+        <img class="lottery-handle-image" src="lt-handle.webp" alt="" aria-hidden="true">
+      </button>
     </div>
   </div>
   <button class="btn big" id="lotteryStart" type="button">🎱 เริ่มลุ้น</button>
@@ -272,7 +284,7 @@ p{margin:0;font-size:16px}
 </div>
 <script>
 const $=s=>document.querySelector(s),FL=['🌻','🌷','🌸','🌼','🌺','🪻','🌹'];
-let T,matchCards=4,timerEnabled=false,fontLevel=1,waitMode=0,sessionRounds=0,matchScore=0,soundEnabled=false,audioContext=null,spotLevel='easy',lotteryTimeout=null,lotteryRollSource=null;
+let T,matchCards=4,timerEnabled=false,fontLevel=1,waitMode=0,sessionRounds=0,matchScore=0,soundEnabled=false,audioContext=null,spotLevel='easy',lotteryTimeout=null,lotteryRollSource=null,lotteryRollInterval=null,lotteryCenterTimeout=null;
 const shuf=a=>[...a].sort(()=>Math.random()-.5);
 const lotteryFortunes=[
   'ก้าวเล็ก ๆ วันนี้ ก็พาคุณไปพบเรื่องดี ๆ ได้',
@@ -295,10 +307,23 @@ const lotteryFortunes=[
 function initLottery(){
   const machine=$('#lotteryMachine');
   if(lotteryTimeout!==null){clearTimeout(lotteryTimeout);lotteryTimeout=null}
+  if(lotteryCenterTimeout!==null){clearTimeout(lotteryCenterTimeout);lotteryCenterTimeout=null}
+  if(lotteryRollInterval!==null){clearInterval(lotteryRollInterval);lotteryRollInterval=null}
   stopLotteryRollSound();
   machine.classList.remove('spinning','has-result');
   $('#lotteryStart').disabled=false;
+  $('#lotteryHandle').disabled=false;
   $('#lotteryBalls').innerHTML=Array.from({length:16},(_,index)=>`<span class="lottery-ball" data-number="${index+1}" aria-hidden="true" style="--ball-delay:${-index*18}ms">${index+1}</span>`).join('');
+  const positions=[
+    [23,26],[34,20],[45,24],[50,35],
+    [18,38],[28,34],[39,38],[48,48],
+    [19,52],[29,48],[40,54],[51,61],
+    [23,65],[34,70],[45,66],[55,76]
+  ];
+  $('#lotteryBalls').querySelectorAll('.lottery-ball').forEach((ball,index)=>{
+    ball.style.left=positions[index][0]+'%';
+    ball.style.top=positions[index][1]+'%';
+  });
   $('#lotteryResult').hidden=true;
   $('#lotteryStatus').textContent='พร้อมแล้ว กดเริ่มลุ้นเมื่อไหร่ก็ได้';
 }
@@ -308,32 +333,64 @@ function startLottery(){
   const number=Math.floor(Math.random()*16)+1;
   const machine=$('#lotteryMachine');
   start.disabled=true;
+  $('#lotteryHandle').disabled=true;
   $('#lotteryResult').hidden=true;
   $('#lotteryStatus').textContent='ลูกบอลกำลังกลิ้ง ลุ้นไปด้วยกันนะ';
   $('#lotteryBalls').querySelectorAll('.selected').forEach(ball=>ball.classList.remove('selected'));
   machine.classList.remove('has-result');
   machine.classList.add('spinning');
   playLotteryRollSound();
+  const balls=$('#lotteryBalls').querySelectorAll('.lottery-ball');
+  const spinStarted=Date.now();
+  lotteryRollInterval=setInterval(()=>{
+    const elapsed=Date.now()-spinStarted;
+    const progress=Math.min(1,elapsed/2800);
+    const easingSpeed=(1-progress)*(1-progress);
+    const rotation=elapsed*.0030*(.35+easingSpeed);
+    balls.forEach((ball,index)=>{
+      const ring=index<6?0:index<12?1:2;
+      const ringIndex=ring===0?index:ring===1?index-6:index-12;
+      const ringCount=ring===2?4:6;
+      const baseAngle=(ringIndex/ringCount)*Math.PI*2-Math.PI/2;
+      const radiusX=ring===0?32:ring===1?24:14;
+      const radiusY=ring===0?29:ring===1?21:12;
+      const ringRotation=rotation*(ring===0?1:ring===1?.82:.62);
+      const angle=baseAngle+ringRotation;
+      ball.style.left=(50+Math.cos(angle)*radiusX)+'%';
+      ball.style.top=(50+Math.sin(angle)*radiusY)+'%';
+    });
+  },180);
   lotteryTimeout=setTimeout(()=>{
     lotteryTimeout=null;
+    if(lotteryRollInterval!==null){clearInterval(lotteryRollInterval);lotteryRollInterval=null}
     machine.classList.remove('spinning');
     machine.classList.add('has-result');
     const winningBall=$(`#lotteryBalls [data-number="${number}"]`);
-    if(winningBall)winningBall.classList.add('selected');
-    $('#lotteryNumber').textContent=number;
-    $('#lotteryFortune').textContent=lotteryFortunes[number-1];
-    $('#lotteryResult').hidden=false;
-    $('#lotteryStatus').textContent='ได้เลข '+number+' แล้ว ขอให้เป็นวันที่ดีนะ';
-    start.disabled=false;
-    ding();
+    if(winningBall){
+      winningBall.classList.remove('selected');
+      void winningBall.offsetWidth;
+      winningBall.classList.add('selected');
+    }
+    lotteryCenterTimeout=setTimeout(()=>{
+      $('#lotteryNumber').textContent=number;
+      $('#lotteryFortune').textContent=lotteryFortunes[number-1];
+      $('#lotteryResult').hidden=false;
+      $('#lotteryStatus').textContent='ได้เลข '+number+' แล้ว ขอให้เป็นวันที่ดีนะ';
+      $('#lotteryStart').disabled=false;
+      $('#lotteryHandle').disabled=false;
+      ding();
+    },850);
   },2800);
 }
 $('#lotteryStart').onclick=startLottery;
+$('#lotteryHandle').onclick=startLottery;
 const inits={match,spot,win,shadow:initShadow,lottery:initLottery,garland:garlandFallback};
 function go(id){
   clearInterval(T);
   if(id!=='lottery'){
     if(lotteryTimeout!==null){clearTimeout(lotteryTimeout);lotteryTimeout=null}
+    if(lotteryCenterTimeout!==null){clearTimeout(lotteryCenterTimeout);lotteryCenterTimeout=null}
+    if(lotteryRollInterval!==null){clearInterval(lotteryRollInterval);lotteryRollInterval=null}
     stopLotteryRollSound();
     const machine=$('#lotteryMachine'),start=$('#lotteryStart');
     if(machine)machine.classList.remove('spinning','has-result');
