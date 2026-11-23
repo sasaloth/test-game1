@@ -50,7 +50,7 @@ if(!document.querySelector('[data-go="garland"]')){
 }
 
 let pattern=[],got=[],wrongs=0,busy=false,S=1;
-const fit=()=>{const sec=$('#garland');return Math.max(.7,Math.min(1.5,((sec.clientWidth||innerWidth)-32)/340,((sec.clientHeight||innerHeight)-292)/408))};
+const fit=()=>{const sec=$('#garland'),rs=parseFloat(getComputedStyle(document.documentElement).fontSize)/16||1;return Math.max(.7,Math.min(1.5,((sec.clientWidth||innerWidth)-32*rs)/340,((sec.clientHeight||innerHeight)-292*rs)/408))};
 
 function build(){
   $('#garland').innerHTML=`<h2>ร้อยมาลัย</h2>
@@ -121,7 +121,7 @@ async function thread(b,k,v){
 function done(){
   $('#glMsg').textContent='มาลัยครบแล้ว! เก็บเข้ามุมสวนเรียบร้อย';
   try{const all=JSON.parse(localStorage.getItem(KEY)||'[]');all.push(got.map(g=>SRC(g.k,g.v)));localStorage.setItem(KEY,JSON.stringify(all.slice(-5)))}catch(e){}
-  garlands++;save();speak('เก่งมาก ร้อยมาลัยสำเร็จแล้ว');
+  try{garlands++}catch(e){}try{save()}catch(e){}speak('เก่งมาก ร้อยมาลัยสำเร็จแล้ว');
   setTimeout(()=>go('win'),1300);
 }
 inits.garland=glInit;
@@ -129,6 +129,7 @@ inits.garland=glInit;
 addEventListener('resize',()=>{const g=$('#garland');if(g.classList.contains('on')&&!got.length&&!busy)glInit()});
 
 // สวน: วาดมาลัยด้วยภาพดอกไม้จริงแทนอีโมจิ
+if(typeof drawGarden==='function'){
 const dg=drawGarden;
 drawGarden=function(){
   dg();
@@ -137,7 +138,5 @@ drawGarden=function(){
   all.forEach(seq=>{const s=document.createElement('span');s.className='garden-garland gl-mini';s.innerHTML=seq.map(src=>`<img src="${src}" alt="">`).join('');gd.append(s)});
 };
 inits.garden=drawGarden;
+}
 })();
-
-// โหลด lottery.js ให้อัตโนมัติ (ไม่ต้องแก้ index.html) — ข้ามถ้า index.html เรียกไว้เองแล้ว
-if(!document.querySelector('script[src*="lottery.js"]')){const s=document.createElement('script');s.src='lottery.js';document.body.append(s)}

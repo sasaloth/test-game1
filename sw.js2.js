@@ -1,4 +1,4 @@
-const V='ww-v4',CORE=['./','index.html','garland.js','lottery.js','lt-frame.webp','lt-arm.webp','lt-handle.webp','manifest.json','icon-192.png','icon-512.png','app-cover-mobile.png','app-cover-desktop.png','fl-marigold.webp','fl-jasmine.webp','fl-rak1.webp','fl-rak2.webp','fl-rak3.webp','fl-rak4.webp','fl-tray.webp'];
+const V='ww-v5',CORE=['./','index.html','garland.js','lt-frame.webp','lt-arm.webp','lt-handle.webp','manifest.json','icon-192.png','icon-512.png','app-cover-mobile.png','app-cover-desktop.png','fl-marigold.webp','fl-jasmine.webp','fl-rak1.webp','fl-rak2.webp','fl-rak3.webp','fl-rak4.webp','fl-tray.webp'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(n=>n!==V).map(n=>caches.delete(n)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{
