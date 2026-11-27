@@ -171,6 +171,13 @@ p{margin:0;font-size:1rem}
 .card:not(.open):not(.done):not(.peek),.card.open,.card.peek{animation:flipin .3s ease-out}
 :is(.menu,.level-btn,.wait-btn,.timer-btn,.spot-level,.shadow-choice,.font-control,.sound-control){transition:transform .22s cubic-bezier(.34,1.56,.64,1)}
 :is(.menu,.level-btn,.wait-btn,.timer-btn,.spot-level,.shadow-choice,.font-control,.sound-control):active{transform:scale(.94)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.lottery-ball{width:clamp(2.5rem,10.5vw,3rem);height:clamp(2.5rem,10.5vw,3rem)}
+.lottery-machine.spinning .lottery-ball{transition:none}
+.lottery-digits{display:flex;gap:.75rem;justify-content:center;flex:none}
+.lottery-digits span{display:grid;place-items:center;width:4.25rem;height:5.25rem;border:.25rem solid #fff;border-radius:1.1rem;background:#fffaf0;color:#2f7a4a;font:700 3rem/1 'Mali',sans-serif;box-shadow:0 .25rem 0 #ead7a8}
+.lottery-digits span.empty{color:#c9d7bf}
+.lottery-digits span.pop{animation:grow .5s ease-out}
 </style>
 </head>
 <body>
@@ -181,7 +188,7 @@ p{margin:0;font-size:1rem}
 <audio id="backgroundMusic" loop preload="metadata" playsinline webkit-playsinline>
   <source src="pripac-relaxed-gaming-vibes-323631.mp3" type="audio/mpeg">
 </audio>
-<small class="version-label">อัปเดต v1.15</small>
+<small class="version-label">อัปเดต v1.16</small>
 
 <section class="scr on cover-start" id="start">
   <h1>แวะเล่น<em>แวะยิ้ม</em></h1>
@@ -204,7 +211,7 @@ p{margin:0;font-size:1rem}
   <button class="menu m2" data-go="spot"><span>🔍</span><div><b>จับผิดภาพ</b><small>สังเกตจุดที่แตกต่าง</small></div></button>
   <button class="menu m2" data-go="shadow"><span>🌑</span><div><b>ทายเงา</b><small>ดูเงาแล้วเลือกภาพที่ใช่</small></div></button>
   <button class="menu m1" data-go="garland"><span>🌺</span><div><b>ร้อยมาลัย</b><small>เรียงดอกไม้ให้ครบหนึ่งพวง</small></div></button>
-  <button class="menu m3" data-go="lottery"><span>🎱</span><div><b>ลุ้นเลขมงคล แวะรับความสุข</b><small>ลุ้นลูกบอล 1–16 พร้อมคำทำนายดี ๆ</small></div></button>
+  <button class="menu m3" data-go="lottery"><span>🍀</span><div><b class="lt-name">วงล้อเลขเด็ด ลุ้นโชคสบายใจ</b><small>หมุนคันโยก สุ่มเลข 3 ตัว เสริมสิริมงคล</small></div></button>
   <button class="btn w" data-go="start">🏠 กลับหน้าหลัก</button>
 </section>
 
@@ -255,18 +262,18 @@ p{margin:0;font-size:1rem}
   <h1 style="font-size:40px">เก่งมาก!</h1>
   <p id="winStatus">คุณได้รับดอกไม้แห่งรอยยิ้ม</p>
   <div class="box"><span id="wf">🌻</span> <small style="font-size:22px">x1</small></div>
-  <div class="row"><button class="btn" data-go="menu">↻ เล่นอีกเกม</button><button class="btn p" data-go="lottery">🎱 ลุ้นเลขมงคล</button></div>
+  <div class="row"><button class="btn" data-go="menu">↻ เล่นอีกเกม</button><button class="btn p" data-go="lottery">🍀 ลุ้นเลขเด็ด</button></div>
   <button class="btn w" data-go="start">🏠 กลับหน้าหลัก</button>
 </section>
 
 <section class="scr" id="lottery">
-  <h2>ลุ้นเลขมงคล<br>แวะรับความสุข</h2>
-  <p class="sub">ลูกบอลหมายเลข 1–16 ลุ้นสนุก ๆ ไม่ต้องรีบ</p>
+  <h2 class="lt-name">วงล้อเลขเด็ด ลุ้นโชคสบายใจ</h2>
+  <p class="sub">หมุนคันโยก สุ่มเลข 3 ตัว ลุ้นสนุก ๆ ไม่ต้องรีบ</p>
   <div class="lottery-scene" role="group" aria-label="เครื่องโหลแก้วสุ่มลูกบอลในสวนดอกไม้">
     <div class="lottery-machine" id="lotteryMachine">
       <img class="lottery-machine-frame" src="lt-frame.webp" alt="">
       <div class="lottery-globe">
-        <div class="lottery-balls" id="lotteryBalls" role="img" aria-label="ลูกบอลหมายเลข 1 ถึง 16"></div>
+        <div class="lottery-balls" id="lotteryBalls" role="img" aria-label="ลูกบอลหมายเลข 0 ถึง 9"></div>
       </div>
       <button class="lottery-handle-button" id="lotteryHandle" type="button" aria-label="โยกคันโยกเพื่อเริ่มลุ้นเลข">
         <img class="lottery-arm-image" src="lt-arm.webp" alt="" aria-hidden="true">
@@ -274,14 +281,15 @@ p{margin:0;font-size:1rem}
       </button>
     </div>
   </div>
-  <button class="btn big" id="lotteryStart" type="button">🎱 เริ่มลุ้น</button>
+  <div class="lottery-digits" id="lotteryDigits" aria-label="เลข 3 ตัวที่ได้"><span class="empty">?</span><span class="empty">?</span><span class="empty">?</span></div>
+  <button class="btn big" id="lotteryStart" type="button">🍀 หมุนลุ้นเลข</button>
   <p class="lottery-status" id="lotteryStatus" role="status" aria-live="polite">พร้อมแล้ว กดเริ่มลุ้นเมื่อไหร่ก็ได้</p>
   <div class="lottery-result" id="lotteryResult" role="status" aria-live="polite" hidden>
-    <span class="sub">เลขที่ได้รับ</span>
-    <strong class="lottery-result-number" id="lotteryNumber">1</strong>
+    <span class="sub">เลขเด็ดของคุณวันนี้</span>
+    <strong class="sr-only" id="lotteryNumber"></strong>
     <p id="lotteryFortune"></p>
   </div>
-  <p class="lottery-note">คำทำนายเพื่อความสนุกและกำลังใจเท่านั้น ไม่ใช่คำแนะนำด้านการเงินหรือสุขภาพ</p>
+  <p class="lottery-note">เลขสุ่มเพื่อความสนุกและกำลังใจเท่านั้น ไม่รับประกันโชคลาภ ไม่ใช่คำแนะนำด้านการเงิน หากซื้อสลากขอให้พอประมาณ</p>
   <div class="row"><button class="btn w" data-go="menu">← กลับไปเลือกเกม</button></div>
 </section>
 
@@ -290,101 +298,122 @@ p{margin:0;font-size:1rem}
 const $=s=>document.querySelector(s),FL=['🌻','🌷','🌸','🌼','🌺','🪻','🌹'];
 let T,matchCards=4,timerEnabled=false,fontLevel=1,waitMode=0,sessionRounds=0,matchScore=0,soundEnabled=false,audioContext=null,spotLevel='easy',lotteryTimeout=null,lotteryRollSource=null,lotteryRollInterval=null,lotteryCenterTimeout=null;
 const shuf=a=>[...a].sort(()=>Math.random()-.5);
-const lotteryFortunes=[
-  'ก้าวเล็ก ๆ วันนี้ ก็พาคุณไปพบเรื่องดี ๆ ได้',
-  'พักหายใจสบาย ๆ แล้วค่อยเริ่มใหม่ก็ได้',
-  'รอยยิ้มเล็ก ๆ อาจทำให้วันของคุณสดใสขึ้น',
-  'คุณทำได้ดีแล้ว อย่าลืมชมตัวเองนะ',
-  'ความใจเย็นช่วยให้ทุกอย่างค่อย ๆ ชัดเจนขึ้น',
-  'วันนี้ลองให้เวลากับสิ่งที่ทำให้สบายใจ',
-  'คนรอบข้างพร้อมเป็นกำลังใจให้คุณ',
-  'ทุกวันมีจังหวะของตัวเอง ไม่ต้องรีบ',
-  'ความหวังเล็ก ๆ ก็มีความหมายเสมอ',
-  'คุณเข้มแข็งกว่าที่คิด และพักได้เมื่อเหนื่อย',
-  'เรื่องดี ๆ เริ่มต้นได้จากการดูแลตัวเอง',
-  'มีเรื่องน่ารักรอให้คุณสังเกตอยู่รอบตัว',
-  'วันนี้เป็นโอกาสดีที่จะยิ้มให้ตัวเอง',
-  'ทำทีละอย่าง เท่าที่ไหวก็เพียงพอแล้ว',
-  'ความสุขอาจอยู่ในช่วงเวลาธรรมดาใกล้ ๆ',
-  'ขอให้วันนี้มีช่วงเวลาที่อบอุ่นใจสำหรับคุณ'
+// ชื่อเกมลุ้นเลข (แก้ที่นี่ที่เดียว: เมนู + หัวข้อหน้าลุ้นเลข)
+const LOTTERY_NAME='วงล้อเลขเด็ด ลุ้นโชคสบายใจ';
+document.querySelectorAll('.lt-name').forEach(e=>e.textContent=LOTTERY_NAME);
+const lotteryBlessings=[
+  'ขอให้โชคดี มีสุขทุกวัน',
+  'ขอให้ยิ้มได้ทุกวัน สบายใจ ๆ นะ',
+  'ขอให้ได้เจอเรื่องดี ๆ ในวันนี้',
+  'ขอให้มีสิริมงคล ใจเย็น สบายใจ',
+  'ขอให้วันนี้เป็นวันดีของคุณ',
+  'โชคดีเริ่มจากรอยยิ้มเล็ก ๆ',
+  'ขอให้มีแต่คนใจดีอยู่รอบตัว',
+  'เลขนี้สุ่มด้วยใจ ขอให้นำโชคนะ'
 ];
-function initLottery(){
-  const machine=$('#lotteryMachine');
+let lotteryRaf=0,lotteryRun=0,lotteryDone=false,lotteryState=[];
+const LT_N=10,LT_RX=31,LT_RY=27,LT_WMAX=Math.PI*2*.62;
+const ltEase=x=>x*x*(3-2*x);
+const ltWrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
+function lotterySleep(ms,run){return new Promise(res=>{lotteryTimeout=setTimeout(()=>{lotteryTimeout=null;res(run===lotteryRun)},ms)})}
+function lotteryStop(){
+  lotteryRun++;
   if(lotteryTimeout!==null){clearTimeout(lotteryTimeout);lotteryTimeout=null}
-  if(lotteryCenterTimeout!==null){clearTimeout(lotteryCenterTimeout);lotteryCenterTimeout=null}
-  if(lotteryRollInterval!==null){clearInterval(lotteryRollInterval);lotteryRollInterval=null}
+  cancelAnimationFrame(lotteryRaf);lotteryRaf=0;
   stopLotteryRollSound();
-  machine.classList.remove('spinning','has-result');
-  $('#lotteryStart').disabled=false;
-  $('#lotteryHandle').disabled=false;
-  $('#lotteryBalls').innerHTML=Array.from({length:16},(_,index)=>`<span class="lottery-ball" data-number="${index+1}" aria-hidden="true" style="--ball-delay:${-index*18}ms">${index+1}</span>`).join('');
-  // กองลูกบอลเรียงอยู่ด้านล่างของลูกโหลก่อน (พิกัดเป็นจุดกึ่งกลางลูกบอล)
+}
+// กองลูกบอลเรียงอยู่ด้านล่างของลูกโหล (พิกัดเป็นจุดกึ่งกลางลูกบอล)
+function lotteryLayout(animate){
   const box=$('#lotteryBalls'),balls=[...box.querySelectorAll('.lottery-ball')];
-  const W=box.clientWidth||240,H=box.clientHeight||204,r=(balls[0].offsetWidth||34)/2;
+  if(!balls.length)return;
+  const W=box.clientWidth||240,H=box.clientHeight||204,r=(balls[0].offsetWidth||40)/2;
   const ax=W/2-r,ay=H/2-r,pos=[];
-  for(let row=0;pos.length<16&&row<10;row++){
-    const y=H/2+ay*.86-row*r*1.75,t=(y-H/2)/ay,hw=ax*Math.sqrt(Math.max(0,1-t*t));
-    const n=Math.min(16-pos.length,Math.max(1,Math.floor(hw*2/(r*1.96))+1));
+  for(let row=0;pos.length<LT_N&&row<10;row++){
+    const y=H/2+ay*.84-row*r*1.75,t=(y-H/2)/ay,hw=ax*Math.sqrt(Math.max(0,1-t*t));
+    const n=Math.min(LT_N-pos.length,Math.max(1,Math.floor(hw*2/(r*1.96))+1));
     for(let k=0;k<n;k++)pos.push([W/2+(k-(n-1)/2)*r*1.96+(Math.random()-.5)*2,y+(Math.random()-.5)*2]);
   }
+  if(animate){box.style.setProperty('--settle','1');balls.forEach(b=>b.style.transition='left .7s cubic-bezier(.3,.7,.3,1),top .7s cubic-bezier(.3,.7,.3,1),opacity .25s,transform .25s');setTimeout(()=>balls.forEach(b=>b.style.transition=''),800)}
   shuf(balls).forEach((ball,i)=>{ball.style.left=(pos[i][0]/W*100)+'%';ball.style.top=(pos[i][1]/H*100)+'%'});
-  $('#lotteryResult').hidden=true;
-  $('#lotteryStatus').textContent='พร้อมแล้ว กดเริ่มลุ้นเมื่อไหร่ก็ได้';
 }
-function startLottery(){
+function lotteryResetSlots(){$('#lotteryDigits').querySelectorAll('span').forEach(s=>{s.textContent='?';s.className='empty'})}
+function initLottery(){
+  lotteryStop();lotteryDone=false;
+  $('#lotteryMachine').classList.remove('spinning','has-result');
+  $('#lotteryStart').disabled=false;$('#lotteryHandle').disabled=false;
+  $('#lotteryStart').textContent='🍀 หมุนลุ้นเลข';
+  $('#lotteryBalls').innerHTML=Array.from({length:LT_N},(_,i)=>`<span class="lottery-ball" data-number="${i}" aria-hidden="true" style="--ball-delay:${-i*18}ms">${i}</span>`).join('');
+  lotteryLayout(false);lotteryResetSlots();
+  $('#lotteryResult').hidden=true;
+  $('#lotteryStatus').textContent='พร้อมแล้ว แตะที่คันโยก หรือกดปุ่ม "หมุนลุ้นเลข" ได้เลย';
+}
+// เริ่มหมุนจากกอง: แปลงตำแหน่งกองเป็นพิกัดวงล้อ (มุม/รัศมี) แล้วค่อย ๆ กระจายออกเป็นวง หมุนตามเข็มนาฬิกา
+function lotteryInitState(){
+  const balls=[...$('#lotteryBalls').querySelectorAll('.lottery-ball')];
+  const ringOf=i=>i<5?0:i<8?1:2,ringN=[5,3,2],ringR=[1,.6,.25],ringV=[1,.8,.62];
+  lotteryState=balls.map((b,i)=>{
+    const x=parseFloat(b.style.left),y=parseFloat(b.style.top),p=(x-50)/LT_RX,q=(y-50)/LT_RY,k=ringOf(i),idx=k===0?i:k===1?i-5:i-8;
+    return{a:Math.atan2(q,p),r:Math.hypot(p,q),rt:ringR[k],ta:(idx/ringN[k])*Math.PI*2-Math.PI/2,v:ringV[k],th:0}
+  });
+}
+function lotterySpin(dur,run){
+  return new Promise(res=>{
+    const balls=[...$('#lotteryBalls').querySelectorAll('.lottery-ball')],t0=performance.now();let last=t0;
+    function frame(now){
+      if(run!==lotteryRun)return res(false);
+      const t=now-t0,dt=Math.min(.05,(now-last)/1000);last=now;
+      const up=ltEase(Math.min(1,t/800)),down=t>dur-700?ltEase(Math.min(1,(t-(dur-700))/700)):0;
+      const w=LT_WMAX*up*(1-down*.9);
+      lotteryState.forEach((o,i)=>{
+        const d=w*o.v*dt;o.th+=d;
+        o.a+=d+ltWrap(o.ta-(o.a-o.th))*Math.min(1,dt*2.2);   // หมุนตามเข็ม + ค่อย ๆ กระจายให้ห่างเท่ากันในแต่ละวง
+        o.r+=(o.rt-o.r)*Math.min(1,dt*3.2);
+        balls[i].style.left=(50+Math.cos(o.a)*o.r*LT_RX)+'%';
+        balls[i].style.top=(50+Math.sin(o.a)*o.r*LT_RY)+'%';
+      });
+      if(t<dur)lotteryRaf=requestAnimationFrame(frame);else res(true);
+    }
+    lotteryRaf=requestAnimationFrame(frame);
+  });
+}
+async function startLottery(){
   const start=$('#lotteryStart');
   if(start.disabled)return;
-  const number=Math.floor(Math.random()*16)+1;
-  const machine=$('#lotteryMachine');
-  start.disabled=true;
-  $('#lotteryHandle').disabled=true;
-  $('#lotteryResult').hidden=true;
-  $('#lotteryStatus').textContent='ลูกบอลกำลังกลิ้ง ลุ้นไปด้วยกันนะ';
-  $('#lotteryBalls').querySelectorAll('.selected').forEach(ball=>ball.classList.remove('selected'));
-  machine.classList.remove('has-result');
-  machine.classList.add('spinning');
-  playLotteryRollSound();
-  const balls=$('#lotteryBalls').querySelectorAll('.lottery-ball');
-  const spinStarted=Date.now();
-  lotteryRollInterval=setInterval(()=>{
-    const elapsed=Date.now()-spinStarted;
-    const progress=Math.min(1,elapsed/2800);
-    const easingSpeed=(1-progress)*(1-progress);
-    const rotation=elapsed*.0030*(.35+easingSpeed);
-    balls.forEach((ball,index)=>{
-      const ring=index<6?0:index<12?1:2;
-      const ringIndex=ring===0?index:ring===1?index-6:index-12;
-      const ringCount=ring===2?4:6;
-      const baseAngle=(ringIndex/ringCount)*Math.PI*2-Math.PI/2;
-      const radiusX=ring===0?35:ring===1?25:14;
-      const radiusY=ring===0?31:ring===1?22:12;
-      const ringRotation=rotation*(ring===0?1:ring===1?.82:.62);
-      const angle=baseAngle+ringRotation;
-      ball.style.left=(50+Math.cos(angle)*radiusX)+'%';
-      ball.style.top=(50+Math.sin(angle)*radiusY)+'%';
-    });
-  },180);
-  lotteryTimeout=setTimeout(()=>{
-    lotteryTimeout=null;
-    if(lotteryRollInterval!==null){clearInterval(lotteryRollInterval);lotteryRollInterval=null}
-    machine.classList.remove('spinning');
-    machine.classList.add('has-result');
-    const winningBall=$(`#lotteryBalls [data-number="${number}"]`);
-    if(winningBall){
-      winningBall.classList.remove('selected');
-      void winningBall.offsetWidth;
-      winningBall.classList.add('selected');
+  lotteryStop();const run=lotteryRun;
+  start.disabled=true;$('#lotteryHandle').disabled=true;
+  $('#lotteryResult').hidden=true;lotteryResetSlots();
+  const machine=$('#lotteryMachine'),box=$('#lotteryBalls');
+  machine.classList.remove('has-result','spinning');
+  box.querySelectorAll('.selected').forEach(b=>b.classList.remove('selected'));
+  $('#lotteryStatus').textContent='ลูกบอลกำลังเรียงเข้าที่ รอสักครู่นะ';
+  if(lotteryDone){lotteryLayout(true);if(!await lotterySleep(850,run))return}
+  else if(!await lotterySleep(300,run))return;
+  lotteryDone=false;lotteryInitState();
+  const picks=[0,1,2].map(()=>Math.floor(Math.random()*10)),slots=[...$('#lotteryDigits').children];
+  for(let k=0;k<3;k++){
+    $('#lotteryStatus').textContent='หมุนลูกที่ '+(k+1)+' จาก 3 ลุ้นไปด้วยกันนะ';
+    machine.classList.add('spinning');playLotteryRollSound();
+    if(!await lotterySpin(k?1600:2500,run))return;
+    stopLotteryRollSound();machine.classList.remove('spinning');machine.classList.add('has-result');
+    const win=box.querySelector(`[data-number="${picks[k]}"]`);
+    win.classList.remove('selected');void win.offsetWidth;win.classList.add('selected');
+    if(!await lotterySleep(800,run))return;
+    slots[k].textContent=picks[k];slots[k].className='pop';ding();
+    $('#lotteryStatus').textContent='ได้เลข '+picks[k]+' แล้ว';
+    if(k<2){
+      if(!await lotterySleep(650,run))return;
+      machine.classList.remove('has-result');win.classList.remove('selected');
     }
-    lotteryCenterTimeout=setTimeout(()=>{
-      $('#lotteryNumber').textContent=number;
-      $('#lotteryFortune').textContent=lotteryFortunes[number-1];
-      $('#lotteryResult').hidden=false;
-      $('#lotteryStatus').textContent='ได้เลข '+number+' แล้ว ขอให้เป็นวันที่ดีนะ';
-      $('#lotteryStart').disabled=false;
-      $('#lotteryHandle').disabled=false;
-      ding();
-    },850);
-  },2800);
+  }
+  if(!await lotterySleep(500,run))return;
+  const number=picks.join(' ');
+  $('#lotteryNumber').textContent=number;
+  $('#lotteryFortune').textContent=lotteryBlessings[Math.floor(Math.random()*lotteryBlessings.length)];
+  $('#lotteryResult').hidden=false;
+  $('#lotteryStatus').textContent='ได้เลขเด็ด '+number+' ขอให้โชคดีนะ';
+  lotteryDone=true;
+  start.textContent='🍀 หมุนลุ้นอีกครั้ง';
+  start.disabled=false;$('#lotteryHandle').disabled=false;
 }
 $('#lotteryStart').onclick=startLottery;
 $('#lotteryHandle').onclick=startLottery;
@@ -392,10 +421,7 @@ const inits={match,spot,win,shadow:initShadow,lottery:initLottery,garland:garlan
 function go(id){
   clearInterval(T);
   if(id!=='lottery'){
-    if(lotteryTimeout!==null){clearTimeout(lotteryTimeout);lotteryTimeout=null}
-    if(lotteryCenterTimeout!==null){clearTimeout(lotteryCenterTimeout);lotteryCenterTimeout=null}
-    if(lotteryRollInterval!==null){clearInterval(lotteryRollInterval);lotteryRollInterval=null}
-    stopLotteryRollSound();
+    lotteryStop();
     const machine=$('#lotteryMachine'),start=$('#lotteryStart');
     if(machine)machine.classList.remove('spinning','has-result');
     if(start)start.disabled=false;
