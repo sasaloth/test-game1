@@ -6,6 +6,7 @@
 <title>แวะเล่น แวะยิ้ม</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#3d9a5f">
+<meta name="color-scheme" content="only light">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -178,6 +179,13 @@ p{margin:0;font-size:1rem}
 .lottery-digits span{display:grid;place-items:center;width:4.25rem;height:5.25rem;border:.25rem solid #fff;border-radius:1.1rem;background:#fffaf0;color:#2f7a4a;font:700 3rem/1 'Mali',sans-serif;box-shadow:0 .25rem 0 #ead7a8}
 .lottery-digits span.empty{color:#c9d7bf}
 .lottery-digits span.pop{animation:grow .5s ease-out}
+/* กันกล่องหดจนข้อความล้น (หน้าสูงกว่าจอ ให้เลื่อนแทนการบีบกล่อง) */
+:root{color-scheme:only light}
+.scr>*{flex-shrink:0}
+.scr:not(#start){padding-bottom:2.5rem}
+.menu div{min-width:0}
+@media (max-height:520px){html{font-size:13px}}
+@media (max-height:400px){html{font-size:12px}}
 </style>
 </head>
 <body>
@@ -188,7 +196,7 @@ p{margin:0;font-size:1rem}
 <audio id="backgroundMusic" loop preload="metadata" playsinline webkit-playsinline>
   <source src="pripac-relaxed-gaming-vibes-323631.mp3" type="audio/mpeg">
 </audio>
-<small class="version-label">อัปเดต v1.16</small>
+<small class="version-label">อัปเดต v1.17</small>
 
 <section class="scr on cover-start" id="start">
   <h1>แวะเล่น<em>แวะยิ้ม</em></h1>
